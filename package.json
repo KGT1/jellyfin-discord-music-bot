@@ -1,0 +1,29 @@
+{
+  "name": "jellyfin-discord-music-bot",
+  "version": "0.0.1",
+  "description": "A Discord Music Bot for the Jellyfin Media Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KGT1/jellyfin-discord-music-bot.git"
+  },
+  "keywords": [
+    "Jellyfin",
+    "Discord",
+    "Discord-Bot"
+  ],
+  "author": "KGT1",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KGT1/jellyfin-discord-music-bot/issues"
+  },
+  "homepage": "https://github.com/KGT1/jellyfin-discord-music-bot#readme",
+  "dependencies": {
+    "@discordjs/opus": "^0.3.2",
+    "discord.js": "^12.3.1",
+    "jellyfin-apiclient": "^1.4.1"
+  }
+}
