@@ -15,7 +15,6 @@ jellyfinClientManager.init();
 jellyfinClientManager.getJellyfinClient().getPublicSystemInfo().then((response) => {
 
     jellyfinClientManager.getJellyfinClient().authenticateUserByName(CONFIG["jellyfin-username"],CONFIG["jellyfin-password"]).then((response)=>{
-        console.log(response)
         jellyfinClientManager.getJellyfinClient().setAuthenticationInfo(response.AccessToken, response.SessionInfo.UserId);
     });
 })
