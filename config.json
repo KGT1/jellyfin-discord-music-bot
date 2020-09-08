@@ -1,4 +1,8 @@
 {
     "token":"",
-    "discord-prefix":""
+    "server-adress":"",
+    "jellyfin-username":"",
+    "jellyfin-password":"",
+    "discord-prefix":"",
+    "jellyfin-app-name":""
 }
