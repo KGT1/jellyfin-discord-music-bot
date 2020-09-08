@@ -5,4 +5,5 @@ RUN npm install
 COPY . /app
 RUN npm run postinstall
 
+CMD node parseENV.js
 CMD npm run start
