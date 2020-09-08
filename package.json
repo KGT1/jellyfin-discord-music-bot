@@ -2,9 +2,11 @@
   "name": "jellyfin-discord-music-bot",
   "version": "0.0.1",
   "description": "A Discord Music Bot for the Jellyfin Media Server",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "postinstall": "npx patch-package"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,10 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "discord.js": "^12.3.1",
-    "jellyfin-apiclient": "^1.4.1"
+    "jellyfin-apiclient": "^1.4.1",
+    "node-fetch": "^2.6.0",
+    "nodejs": "0.0.0",
+    "window": "^4.2.7",
+    "ytdl-core": "^3.2.2"
   }
 }

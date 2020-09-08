@@ -1,74 +1,146 @@
 const CONFIG = require('../config.json');
-
 const Discord = require('discord.js');
-
+const {
+    checkJellyfinItemIDRegex
+} = require('./util');
 const {
     getAudioDispatcher,
     setAudioDispatcher
 } = require('./dispachermanager');
 
 const discordclientmanager = require('./discordclientmanager');
+const jellyfinClientManager = require('./jellyfinclientmanager');
 const discordClient = discordclientmanager.getDiscordClient();
+
+
+var isSummendByPlay = false;
 
 
 //random Color of the Jellyfin Logo Gradient
 function getRandomDiscordColor() {
-    function randomNumber(b,a){
-        return Math.floor((Math.random()*Math.pow(Math.pow((b-a),2),1/2))+(b>a?a:b))
+    function randomNumber(b, a) {
+        return Math.floor((Math.random() * Math.pow(Math.pow((b - a), 2), 1 / 2)) + (b > a ? a : b))
     }
 
-    const GRANDIENT_START='#AA5CC3';
-    const GRANDIENT_END='#00A4DC';
+    const GRANDIENT_START = '#AA5CC3';
+    const GRANDIENT_END = '#00A4DC';
 
-    let rS=GRANDIENT_START.slice(1,3);
-    let gS=GRANDIENT_START.slice(3,5);
-    let bS=GRANDIENT_START.slice(5,7);
-    rS=parseInt(rS,16);
-    gS=parseInt(gS,16);
-    bS=parseInt(bS,16);
+    let rS = GRANDIENT_START.slice(1, 3);
+    let gS = GRANDIENT_START.slice(3, 5);
+    let bS = GRANDIENT_START.slice(5, 7);
+    rS = parseInt(rS, 16);
+    gS = parseInt(gS, 16);
+    bS = parseInt(bS, 16);
 
-    let rE=GRANDIENT_END.slice(1,3);
-    let gE=GRANDIENT_END.slice(3,5);
-    let bE=GRANDIENT_END.slice(5,7);
-    rE=parseInt(rE,16);
-    gE=parseInt(gE,16);
-    bE=parseInt(bE,16);
+    let rE = GRANDIENT_END.slice(1, 3);
+    let gE = GRANDIENT_END.slice(3, 5);
+    let bE = GRANDIENT_END.slice(5, 7);
+    rE = parseInt(rE, 16);
+    gE = parseInt(gE, 16);
+    bE = parseInt(bE, 16);
 
-    return ('#'+('00'+(randomNumber(rS,rE)).toString(16)).substr(-2)+('00'+(randomNumber(gS,gE)).toString(16)).substr(-2)+('00'+(randomNumber(bS,bE)).toString(16)).substr(-2));
+    return ('#' + ('00' + (randomNumber(rS, rE)).toString(16)).substr(-2) + ('00' + (randomNumber(gS, gE)).toString(16)).substr(-2) + ('00' + (randomNumber(bS, bE)).toString(16)).substr(-2));
+}
+
+async function searchForItemID(searchString) {
+
+    let response = await jellyfinClientManager.getJellyfinClient().getSearchHints({
+        searchTerm: searchString,
+        includeItemTypes: "Audio"
+    })
+
+    if (response.TotalRecordCount < 1) {
+        throw "Found no Song"
+    } else {
+        return response.SearchHints[0].ItemId
+    }
+}
+
+function summon(voiceChannel){
+
+    if (!voiceChannel) {
+        return message.reply('please join a voice channel to summon me!');
+    }
+
+    voiceChannel.join()
 }
 
 function handleChannelMessage(message) {
-    getRandomDiscordColor() 
+    getRandomDiscordColor()
 
     if (message.content.startsWith(CONFIG["discord-prefix"] + 'summon')) {
         if (message.channel.type === 'dm') {
             return;
         }
 
-        const voiceChannel = message.member.voice.channel;
+        summon(message.member.voice.channel);
 
-        if (!voiceChannel) {
-            return message.reply('please join a voice channel to summon me!');
-        }
 
-        voiceChannel.join().then(connection => {
-            const stream = `${CONFIG['server-adress']}/Audio/0751d668d58afb25b755eca639c498ed/universal?UserId=d5ed94520ff542378b368246683ff9de&DeviceId=Jellyfin%20Discord%20Music%20Bot&MaxStreamingBitrate=320000&Container=opus&AudioCodec=opus&api_key=${CONFIG["jellyfin-api-key"]}&TranscodingContainer=ts&TranscodingProtocol=hls`;
-            setAudioDispatcher(connection.play(stream));
-        });
+
     } else if (message.content.startsWith(CONFIG["discord-prefix"] + 'disconnect')) {
         discordClient.user.client.voice.connections.forEach((element) => {
             element.disconnect();
         });
-    } else if (message.content.startsWith(CONFIG["discord-prefix"] + 'pause')) {
+
+
+    } else if ((message.content.startsWith(CONFIG["discord-prefix"] + 'pause')) || (message.content.startsWith(CONFIG["discord-prefix"] + 'resume'))) {
         if (getAudioDispatcher() !== undefined) {
             if (getAudioDispatcher().paused)
                 getAudioDispatcher().resume();
             else
                 getAudioDispatcher().pause(true);
         } else {
-            console.log("WHYYYYYYY")
-            console.log(getAudioDispatcher());
+            message.reply("there is nothing playing!")
         }
+
+
+    } else if (message.content.startsWith(CONFIG["discord-prefix"] + 'play')) {
+
+    
+        if (discordClient.user.client.voice.connections.size < 1) {
+            discordClient.user.client.voice.connections.size
+            summon(message.member.voice.channel)
+            isSummendByPlay=true
+        }
+
+        async function playThis(){
+            
+            let indexOfItemID = message.content.indexOf(CONFIG["discord-prefix"] + 'play') + (CONFIG["discord-prefix"] + 'play').length + 1;
+            let argument = message.content.slice(indexOfItemID);
+            let itemID;
+            //check if play command was used with itemID
+            let regexresults = checkJellyfinItemIDRegex(argument);
+            if (regexresults) {
+                itemID = regexresults[0];
+            } else {
+                try {
+                    itemID = await searchForItemID(argument);
+                } catch (e) {
+                    message.reply(e);
+                }
+            }
+    
+            discordClient.user.client.voice.connections.forEach((element) => {
+                let stream = `${jellyfinClientManager.getJellyfinClient().serverAddress()}/Audio/${itemID}/universal?UserId=${jellyfinClientManager.getJellyfinClient().getCurrentUserId()}&DeviceId=${jellyfinClientManager.getJellyfinClient().deviceId()}&MaxStreamingBitrate=${element.channel.bitrate.toString()}&Container=opus&AudioCodec=opus&api_key=${jellyfinClientManager.getJellyfinClient().accessToken()}&TranscodingContainer=ts&TranscodingProtocol=hls`;
+                setAudioDispatcher(element.play(stream));
+                element.on("error", (error) => {
+                    console.error(error);
+                })
+                getAudioDispatcher().on("finish",()=>{
+                    if(isSummendByPlay){
+                        element.disconnect();
+                    }
+                })
+            })
+        }
+
+        playThis();
+
+    } else if (message.content.startsWith(CONFIG["discord-prefix"] + 'stop')) {
+        getAudioDispatcher().pause()
+        setAudioDispatcher(undefined)
+
+
     } else if (message.content.startsWith(CONFIG["discord-prefix"] + 'help')) {
         const reply = new Discord.MessageEmbed()
             .setColor(getRandomDiscordColor())
