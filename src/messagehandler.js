@@ -139,7 +139,9 @@ function handleChannelMessage(message) {
     } else if (message.content.startsWith(CONFIG["discord-prefix"] + 'stop')) {
         getAudioDispatcher().pause()
         setAudioDispatcher(undefined)
-
+        discordClient.user.client.voice.connections.forEach((element) => {
+            element.disconnect();
+        });
 
     } else if (message.content.startsWith(CONFIG["discord-prefix"] + 'help')) {
         const reply = new Discord.MessageEmbed()
