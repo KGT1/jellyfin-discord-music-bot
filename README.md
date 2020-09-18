@@ -1,6 +1,6 @@
 # Jellyfin Discord Music Bot
 
-Jellyfin Discord Music Bot is a Discord Bot for the [Jellyfin Media Server!](http://github.com/jellyfin/jellyfin);
+Jellyfin Discord Music Bot is a Discord Bot for the [Jellyfin Media Server!](http://github.com/jellyfin/jellyfin)
 
 ## Getting Started
 
