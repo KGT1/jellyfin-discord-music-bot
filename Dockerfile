@@ -6,5 +6,4 @@ WORKDIR /app
 RUN npm install
 RUN npm run postinstall
 
-CMD node parseENV.js
-CMD npm run start
+CMD node parseENV.js && npm run start

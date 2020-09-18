@@ -5,7 +5,7 @@ const configfile = require(filename);
 if(!configfile["discord-prefix"])
     configfile["discord-prefix"]=process.env.DISCORD_PREFIX;
 if(!configfile["token"])
-    onfigfile["token"]=process.env.DISCORD_TOKEN;
+    configfile["token"]=process.env.DISCORD_TOKEN;
 if(!configfile["server-adress"])
     configfile["server-adress"]=process.env.JELLYFIN_SERVER_ADDRESS;
 if(!configfile["jellyfin-username"])
