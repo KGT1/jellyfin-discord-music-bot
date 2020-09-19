@@ -1,5 +1,5 @@
 
-const { ApiClient } = require('jellyfin-apiclient');
+const { ApiClient , Events } = require('jellyfin-apiclient');
 const CONFIG = require('../config.json');
 const os = require('os');
 
@@ -13,7 +13,12 @@ function getJellyfinClient(){
     return jellyfinClient;
 }
 
+function getJellyfinEvents(){
+    return Events;
+}
+
 module.exports = {
     getJellyfinClient,
+    getJellyfinEvents,
     init
 }
