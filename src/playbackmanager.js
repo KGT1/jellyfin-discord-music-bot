@@ -91,7 +91,7 @@ function getPlaylistItemId(){
 }
 
 function getPlaySessionId(){
-    //really need to figure out what this is and how to get it
+    //i think its just a number which you dont need to retrieve but need to report
     return 'ae2436edc6b91b11d72aeaa67f84e0ea';
 }
 
