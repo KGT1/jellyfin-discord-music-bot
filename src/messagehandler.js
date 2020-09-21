@@ -122,6 +122,8 @@ function handleChannelMessage(message) {
                     itemID = await searchForItemID(argument);
                 } catch (e) {
                     message.reply(e);
+                    playbackmanager.stop(discordClient.user.client.voice.connections.first());
+                    return;
                 }
             }
     
