@@ -4,12 +4,13 @@ const {
     checkJellyfinItemIDRegex
 } = require('./util');
 const {
-    getAudioDispatcher,
-    setAudioDispatcher
+    getAudioDispatcher
 } = require('./dispachermanager');
 
 const discordclientmanager = require('./discordclientmanager');
 const jellyfinClientManager = require('./jellyfinclientmanager');
+const playbackmanager = require('./playbackmanager');
+const websocketHanler = require('./websockethandler');
 const discordClient = discordclientmanager.getDiscordClient();
 
 
@@ -57,27 +58,35 @@ async function searchForItemID(searchString) {
 }
 
 function summon(voiceChannel){
-
-    if (!voiceChannel) {
-        return message.reply('please join a voice channel to summon me!');
-    }
-
     voiceChannel.join()
+}
+
+function summonMessage(message){
+    if (!message.member.voice.channel) {
+         message.reply('please join a voice channel to summon me!');
+    }else if(message.channel.type === 'dm'){
+        message.reply('no dms')
+    }
+    else{
+        summon(message.member.voice.channel)
+    }
 }
 
 function handleChannelMessage(message) {
     getRandomDiscordColor()
 
     if (message.content.startsWith(CONFIG["discord-prefix"] + 'summon')) {
-        if (message.channel.type === 'dm') {
-            return;
-        }
+        isSummendByPlay = false;
 
-        summon(message.member.voice.channel);
+        websocketHanler.openSocket();
+
+        summonMessage(message);
 
 
 
     } else if (message.content.startsWith(CONFIG["discord-prefix"] + 'disconnect')) {
+        playbackmanager.stop()
+        jellyfinClientManager.getJellyfinClient().closeWebSocket();
         discordClient.user.client.voice.connections.forEach((element) => {
             element.disconnect();
         });
@@ -85,10 +94,7 @@ function handleChannelMessage(message) {
 
     } else if ((message.content.startsWith(CONFIG["discord-prefix"] + 'pause')) || (message.content.startsWith(CONFIG["discord-prefix"] + 'resume'))) {
         if (getAudioDispatcher() !== undefined) {
-            if (getAudioDispatcher().paused)
-                getAudioDispatcher().resume();
-            else
-                getAudioDispatcher().pause(true);
+            playbackmanager.playPause();
         } else {
             message.reply("there is nothing playing!")
         }
@@ -98,8 +104,7 @@ function handleChannelMessage(message) {
 
     
         if (discordClient.user.client.voice.connections.size < 1) {
-            discordClient.user.client.voice.connections.size
-            summon(message.member.voice.channel)
+            summonMessage(message)
             isSummendByPlay=true
         }
 
@@ -121,27 +126,20 @@ function handleChannelMessage(message) {
             }
     
             discordClient.user.client.voice.connections.forEach((element) => {
-                let stream = `${jellyfinClientManager.getJellyfinClient().serverAddress()}/Audio/${itemID}/universal?UserId=${jellyfinClientManager.getJellyfinClient().getCurrentUserId()}&DeviceId=${jellyfinClientManager.getJellyfinClient().deviceId()}&MaxStreamingBitrate=${element.channel.bitrate.toString()}&Container=opus&AudioCodec=opus&api_key=${jellyfinClientManager.getJellyfinClient().accessToken()}&TranscodingContainer=ts&TranscodingProtocol=hls`;
-                setAudioDispatcher(element.play(stream));
-                element.on("error", (error) => {
-                    console.error(error);
-                })
-                getAudioDispatcher().on("finish",()=>{
-                    if(isSummendByPlay){
-                        element.disconnect();
-                    }
-                })
+                playbackmanager.startPlaying(element,itemID,isSummendByPlay);
             })
         }
 
         playThis();
 
     } else if (message.content.startsWith(CONFIG["discord-prefix"] + 'stop')) {
-        getAudioDispatcher().pause()
-        setAudioDispatcher(undefined)
-        discordClient.user.client.voice.connections.forEach((element) => {
-            element.disconnect();
-        });
+        if(isSummendByPlay){
+            if(discordClient.user.client.voice.connections.size > 0){
+                playbackmanager.stop(discordClient.user.client.voice.connections.first());
+            }
+        }else{
+            playbackmanager.stop();
+        }
 
     } else if (message.content.startsWith(CONFIG["discord-prefix"] + 'help')) {
         const reply = new Discord.MessageEmbed()
