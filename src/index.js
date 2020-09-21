@@ -12,12 +12,11 @@ const {audioDispatcher} = require('./dispachermanager');
 const {handleChannelMessage}=require('./messagehandler');
 
 jellyfinClientManager.init();
-jellyfinClientManager.getJellyfinClient().getPublicSystemInfo().then((response) => {
+//TODO Error Checking as the apiclients is inefficent
+jellyfinClientManager.getJellyfinClient().authenticateUserByName(CONFIG["jellyfin-username"],CONFIG["jellyfin-password"]).then((response)=>{
+    jellyfinClientManager.getJellyfinClient().setAuthenticationInfo(response.AccessToken, response.SessionInfo.UserId);
+});
 
-    jellyfinClientManager.getJellyfinClient().authenticateUserByName(CONFIG["jellyfin-username"],CONFIG["jellyfin-password"]).then((response)=>{
-        jellyfinClientManager.getJellyfinClient().setAuthenticationInfo(response.AccessToken, response.SessionInfo.UserId);
-    });
-})
 
 discordClient.on('ready', () => {
     console.log('connected to Discord');
