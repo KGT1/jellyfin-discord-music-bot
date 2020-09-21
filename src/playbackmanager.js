@@ -144,8 +144,6 @@ function getProgressPayload(){
         RepeatMode: getRepeatMode(),
         VolumeLevel: getVolumeLevel()
     }
-
-    console.log(payload.IsPaused);
     return payload
 }
 
