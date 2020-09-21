@@ -1,15 +1,15 @@
-const Discord = require('discord.js');
+const Discord = require("discord.js");
 
 var discordClient;
 
-function init(){ 
-    discordClient= new Discord.Client();
+function init () {
+	discordClient = new Discord.Client();
 }
-function getDiscordClient(){
-    return discordClient;
+function getDiscordClient () {
+	return discordClient;
 }
 
 module.exports = {
-    getDiscordClient,
-    init
-}
+	getDiscordClient,
+	init
+};
