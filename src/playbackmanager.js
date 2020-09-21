@@ -132,7 +132,8 @@ function getProgressPayload () {
 		PlaylistItemId: getPlaylistItemId(),
 		PositionTicks: getPostitionTicks(),
 		RepeatMode: getRepeatMode(),
-		VolumeLevel: getVolumeLevel()
+		VolumeLevel: getVolumeLevel(),
+		EventName: "pauseplayupdate"
 	};
 	return payload;
 }
