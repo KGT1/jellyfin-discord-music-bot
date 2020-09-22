@@ -41,6 +41,7 @@ function getRandomDiscordColor () {
 	return ("#" + ("00" + (randomNumber(rS, rE)).toString(16)).substr(-2) + ("00" + (randomNumber(gS, gE)).toString(16)).substr(-2) + ("00" + (randomNumber(bS, bE)).toString(16)).substr(-2));
 }
 
+// Song Search, return the song itemID
 async function searchForItemID (searchString) {
 	const response = await jellyfinClientManager.getJellyfinClient().getSearchHints({
 		searchTerm: searchString,
@@ -59,13 +60,36 @@ function summon (voiceChannel) {
 }
 
 function summonMessage (message) {
+	getRandomDiscordColor();
 	if (!message.member.voice.channel) {
 		message.reply("please join a voice channel to summon me!");
 	} else if (message.channel.type === "dm") {
 		message.reply("no dms");
 	} else {
+		var desc = "**Joined Voice Channel** `";
+		desc = desc.concat(message.member.voice.channel.name).concat("`");
+
 		summon(message.member.voice.channel);
+
+		const vcJoin = new Discord.MessageEmbed()
+			.setColor(getRandomDiscordColor())
+			.setTitle('Joined Channel')
+			.setTimestamp()
+			.setDescription("<:loudspeaker:757929476993581117> " + desc);
+		message.channel.send(vcJoin);
 	}
+}
+
+function songPlayMessage (message, itemID, argument){
+	getRandomDiscordColor();
+	//const imageUrl = getImageUrl(itemID);
+	const play = new Discord.MessageEmbed()
+		.setColor(getRandomDiscordColor())
+		.setTitle('Now Playing')
+		//.setImage(imageUrl)
+		.setTimestamp()
+		.setDescription("<:mag_right:757935694403338380> " + 'Top result for: ' + argument);
+	message.channel.send(play);
 }
 
 async function playThis (message) {
@@ -80,13 +104,19 @@ async function playThis (message) {
 		try {
 			itemID = await searchForItemID(argument);
 		} catch (e) {
-			message.reply(e.message);
+			const noSong = new Discord.MessageEmbed()
+				.setColor(0xff0000)
+				.setTitle('Error!')
+				.setTimestamp()
+				.setDescription("<:x:757935515445231651> " + e);
+			message.channel.send(noSong);
 			playbackmanager.stop(discordClient.user.client.voice.connections.first());
 			return;
 		}
 	}
 
 	discordClient.user.client.voice.connections.forEach((element) => {
+		songPlayMessage(message, itemID, argument);
 		playbackmanager.startPlaying(element, itemID, isSummendByPlay);
 	});
 }
@@ -106,11 +136,28 @@ function handleChannelMessage (message) {
 		discordClient.user.client.voice.connections.forEach((element) => {
 			element.disconnect();
 		});
+		var desc = "**Left Voice Channel** `";
+		desc = desc.concat(message.member.voice.channel.name).concat("`");
+		const vcJoin = new Discord.MessageEmbed()
+			.setColor(getRandomDiscordColor())
+			.setTitle('Left Channel')
+			.setTimestamp()
+			.setDescription("<:wave:757938481585586226> " + desc);
+		message.channel.send(vcJoin);
 	} else if ((message.content.startsWith(CONFIG["discord-prefix"] + "pause")) || (message.content.startsWith(CONFIG["discord-prefix"] + "resume"))) {
 		if (getAudioDispatcher() !== undefined) {
 			playbackmanager.playPause();
+			const noPlay = new Discord.MessageEmbed()
+				.setColor(0xff0000)
+				.setTitle("<:play_pause:757940598106882049> " +'Paused/Resumed.')
+				.setTimestamp()
+			message.channel.send(noPlay);
 		} else {
-			message.reply("there is nothing playing!");
+			const noPlay = new Discord.MessageEmbed()
+				.setColor(0xff0000)
+				.setTitle("<:x:757935515445231651> " +'There is nothing Playing right now!')
+				.setTimestamp()
+			message.channel.send(noPlay);
 		}
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "play")) {
 		if (discordClient.user.client.voice.connections.size < 1) {
@@ -130,6 +177,7 @@ function handleChannelMessage (message) {
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "help")) {
 		const reply = new Discord.MessageEmbed()
 			.setColor(getRandomDiscordColor())
+			.setTitle("<:musical_note:757938541123862638> " + 'Jellyfin Discord Music Bot' + " <:musical_note:757938541123862638> ")
 			.addFields({
 				name: `${CONFIG["discord-prefix"]}summon`,
 				value: "Join the channel the author of the message"
@@ -145,6 +193,9 @@ function handleChannelMessage (message) {
 			}, {
 				name: `${CONFIG["discord-prefix"]}help`,
 				value: "Display this help message"
+			}, {
+				name: `GitHub`,
+				value: "Find the code for this bot at: https://github.com/KGT1/jellyfin-discord-music-bot"
 			});
 		message.channel.send(reply);
 	}
