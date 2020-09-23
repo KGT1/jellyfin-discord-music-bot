@@ -116,7 +116,7 @@ async function playThis (message) {
 	}
 
 	discordClient.user.client.voice.connections.forEach((element) => {
-		songPlayMessage(message, itemID, argument);
+		songPlayMessage(message, argument);
 		playbackmanager.startPlaying(element, itemID, isSummendByPlay);
 	});
 }
