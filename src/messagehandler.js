@@ -44,14 +44,13 @@ function getRandomDiscordColor () {
 	return ("#" + ("00" + (randomNumber(rS, rE)).toString(16)).substr(-2) + ("00" + (randomNumber(gS, gE)).toString(16)).substr(-2) + ("00" + (randomNumber(bS, bE)).toString(16)).substr(-2));
 }
 
-function getDiscordEmbedError(e){
+function getDiscordEmbedError (e) {
 	return new Discord.MessageEmbed()
 		.setColor(0xff0000)
 		.setTitle("Error!")
 		.setTimestamp()
 		.setDescription("<:x:757935515445231651> " + e);
 }
-
 
 // Song Search, return the song itemID
 async function searchForItemID (searchString) {
@@ -114,7 +113,7 @@ async function playThis (message) {
 		} catch (e) {
 			const noSong = getDiscordEmbedError(e);
 			message.channel.send(noSong);
-			playbackmanager.stop(isSummendByPlay?discordClient.user.client.voice.connections.first():undefined);
+			playbackmanager.stop(isSummendByPlay ? discordClient.user.client.voice.connections.first() : undefined);
 			return;
 		}
 	}
@@ -182,7 +181,7 @@ function handleChannelMessage (message) {
 		const indexOfArgument = message.content.indexOf(CONFIG["discord-prefix"] + "seek") + (CONFIG["discord-prefix"] + "seek").length + 1;
 		const argument = message.content.slice(indexOfArgument);
 		try {
-			playbackmanager.seek(hmsToSeconds(argument)*10000000);
+			playbackmanager.seek(hmsToSeconds(argument) * 10000000);
 		} catch (error) {
 			const errorMessage = getDiscordEmbedError(error);
 			message.channel.send(errorMessage);

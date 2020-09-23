@@ -7,16 +7,16 @@ function ticksToSeconds (ticks) {
 	return ticks / 10000000;
 }
 
-function hmsToSeconds(str) {
-    var p = str.split(':'),
-        s = 0, m = 1;
+function hmsToSeconds (str) {
+	var p = str.split(":");
+	var s = 0; var m = 1;
 
-    while (p.length > 0) {
-        s += m * parseInt(p.pop(), 10);
-        m *= 60;
-    }
+	while (p.length > 0) {
+		s += m * parseInt(p.pop(), 10);
+		m *= 60;
+	}
 
-    return s;
+	return s;
 }
 
 module.exports = {
