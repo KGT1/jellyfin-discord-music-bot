@@ -20,8 +20,9 @@ var isSummendByPlay = false;
 
 // random Color of the Jellyfin Logo Gradient
 function getRandomDiscordColor () {
+	let random = Math.random();
 	function randomNumber (b, a) {
-		return Math.floor((Math.random() * Math.pow(Math.pow((b - a), 2), 1 / 2)) + (b > a ? a : b));
+		return Math.floor(random * Math.pow(Math.pow((b - a), 2), 1 / 2)) + (b > a ? a : b));
 	}
 
 	const GRANDIENT_START = "#AA5CC3";
