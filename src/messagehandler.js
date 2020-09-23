@@ -106,7 +106,7 @@ async function playThis (message) {
 				.setTimestamp()
 				.setDescription("<:x:757935515445231651> " + e);
 			message.channel.send(noSong);
-			playbackmanager.stop(discordClient.user.client.voice.connections.first());
+			playbackmanager.stop(isSummendByPlay?discordClient.user.client.voice.connections.first():undefined);
 			return;
 		}
 	}
