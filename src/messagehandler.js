@@ -72,20 +72,19 @@ function summonMessage (message) {
 
 		const vcJoin = new Discord.MessageEmbed()
 			.setColor(getRandomDiscordColor())
-			.setTitle('Joined Channel')
+			.setTitle("Joined Channel")
 			.setTimestamp()
 			.setDescription("<:loudspeaker:757929476993581117> " + desc);
 		message.channel.send(vcJoin);
 	}
 }
 
-function songPlayMessage (message, argument){
+function songPlayMessage (message, argument) {
 	const play = new Discord.MessageEmbed()
 		.setColor(getRandomDiscordColor())
-		.setTitle('Now Playing')
-		//.setImage(imageUrl)
+		.setTitle("Now Playing")
 		.setTimestamp()
-		.setDescription("<:mag_right:757935694403338380> " + 'Top result for: ' + argument);
+		.setDescription("<:mag_right:757935694403338380> " + "Top result for: " + argument);
 	message.channel.send(play);
 }
 
@@ -103,7 +102,7 @@ async function playThis (message) {
 		} catch (e) {
 			const noSong = new Discord.MessageEmbed()
 				.setColor(0xff0000)
-				.setTitle('Error!')
+				.setTitle("Error!")
 				.setTimestamp()
 				.setDescription("<:x:757935515445231651> " + e);
 			message.channel.send(noSong);
@@ -137,7 +136,7 @@ function handleChannelMessage (message) {
 		desc = desc.concat(message.member.voice.channel.name).concat("`");
 		const vcJoin = new Discord.MessageEmbed()
 			.setColor(getRandomDiscordColor())
-			.setTitle('Left Channel')
+			.setTitle("Left Channel")
 			.setTimestamp()
 			.setDescription("<:wave:757938481585586226> " + desc);
 		message.channel.send(vcJoin);
@@ -146,14 +145,14 @@ function handleChannelMessage (message) {
 			playbackmanager.playPause();
 			const noPlay = new Discord.MessageEmbed()
 				.setColor(0xff0000)
-				.setTitle("<:play_pause:757940598106882049> " +'Paused/Resumed.')
-				.setTimestamp()
+				.setTitle("<:play_pause:757940598106882049> " + "Paused/Resumed.")
+				.setTimestamp();
 			message.channel.send(noPlay);
 		} else {
 			const noPlay = new Discord.MessageEmbed()
 				.setColor(0xff0000)
-				.setTitle("<:x:757935515445231651> " +'There is nothing Playing right now!')
-				.setTimestamp()
+				.setTitle("<:x:757935515445231651> " + "There is nothing Playing right now!")
+				.setTimestamp();
 			message.channel.send(noPlay);
 		}
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "play")) {
@@ -174,7 +173,7 @@ function handleChannelMessage (message) {
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "help")) {
 		const reply = new Discord.MessageEmbed()
 			.setColor(getRandomDiscordColor())
-			.setTitle("<:musical_note:757938541123862638> " + 'Jellyfin Discord Music Bot' + " <:musical_note:757938541123862638> ")
+			.setTitle("<:musical_note:757938541123862638> " + "Jellyfin Discord Music Bot" + " <:musical_note:757938541123862638> ")
 			.addFields({
 				name: `${CONFIG["discord-prefix"]}summon`,
 				value: "Join the channel the author of the message"
