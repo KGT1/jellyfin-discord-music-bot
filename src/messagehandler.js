@@ -60,7 +60,6 @@ function summon (voiceChannel) {
 }
 
 function summonMessage (message) {
-	getRandomDiscordColor();
 	if (!message.member.voice.channel) {
 		message.reply("please join a voice channel to summon me!");
 	} else if (message.channel.type === "dm") {
