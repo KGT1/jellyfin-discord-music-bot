@@ -1,11 +1,17 @@
+const discordclientmanager = require("./discordclientmanager");
 const {
 	getAudioDispatcher,
 	setAudioDispatcher
 } = require("./dispachermanager");
+const {
+	ticksToSeconds
+} = require("./util");
 
 var currentPlayingItemId;
 var progressInterval;
 var isPaused;
+var _disconnectOnFinish;
+var _seek;
 
 const jellyfinClientManager = require("./jellyfinclientmanager");
 function streamURLbuilder (itemID, bitrate) {
@@ -15,13 +21,20 @@ function streamURLbuilder (itemID, bitrate) {
 	return `${jellyfinClientManager.getJellyfinClient().serverAddress()}/Audio/${itemID}/universal?UserId=${jellyfinClientManager.getJellyfinClient().getCurrentUserId()}&DeviceId=${jellyfinClientManager.getJellyfinClient().deviceId()}&MaxStreamingBitrate=${bitrate}&Container=${supportedContainers}&AudioCodec=${supportedCodecs}&api_key=${jellyfinClientManager.getJellyfinClient().accessToken()}&TranscodingContainer=ts&TranscodingProtocol=hls`;
 }
 
-function startPlaying (voiceconnection, itemID, disconnectOnFinish) {
+function startPlaying (voiceconnection = discordclientmanager.getDiscordClient().user.client.voice.connections.first(), itemID = currentPlayingItemId, seekTo, disconnectOnFinish = _disconnectOnFinish) {
 	isPaused = false;
+	currentPlayingItemId = itemID;
+	_disconnectOnFinish = disconnectOnFinish;
+	_seek=seekTo*1000;
 	async function playasync () {
 		const url = streamURLbuilder(itemID, voiceconnection.channel.bitrate);
-		jellyfinClientManager.getJellyfinClient().reportPlaybackStart({ userID: `${jellyfinClientManager.getJellyfinClient().getCurrentUserId()}`, itemID: `${itemID}` });
-		currentPlayingItemId = itemID;
-		setAudioDispatcher(voiceconnection.play(url));
+		setAudioDispatcher(voiceconnection.play(url ,{seek: seekTo}));
+		console.log(seekTo, ticksToSeconds(getPostitionTicks()));
+		if(seekTo){
+			jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
+		}else{
+			jellyfinClientManager.getJellyfinClient().reportPlaybackStart({ userID: `${jellyfinClientManager.getJellyfinClient().getCurrentUserId()}`, itemID: `${itemID}`, canSeek: true ,playSessionId: getPlaySessionId(), playMethod:getPlayMethod()});
+		}
 
 		getAudioDispatcher().on("finish", () => {
 			if (disconnectOnFinish) {
@@ -34,6 +47,16 @@ function startPlaying (voiceconnection, itemID, disconnectOnFinish) {
 	playasync().catch((rsn) => { console.log(rsn); });
 }
 /**
+ * @param {Number} toSeek - where to seek in ticks
+ */
+function seek(toSeek = 0){
+	if(getAudioDispatcher()){
+		startPlaying(undefined,undefined,ticksToSeconds(toSeek),_disconnectOnFinish);
+		jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
+	}
+}
+
+/**
  * @param {Object=} disconnectVoiceConnection - Optional The voice Connection do disconnect from
  */
 function stop (disconnectVoiceConnection) {
@@ -41,7 +64,7 @@ function stop (disconnectVoiceConnection) {
 	if (disconnectVoiceConnection) {
 		disconnectVoiceConnection.disconnect();
 	}
-	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped({ userId: jellyfinClientManager.getJellyfinClient().getCurrentUserId(), itemId: currentPlayingItemId });
+	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped({ userId: jellyfinClientManager.getJellyfinClient().getCurrentUserId(), itemId: currentPlayingItemId ,playSessionId: getPlaySessionId()});
 	if (getAudioDispatcher()) { getAudioDispatcher().destroy(); }
 	setAudioDispatcher(undefined);
 	clearInterval(progressInterval);
@@ -63,12 +86,12 @@ function playPause () {
 
 function getPostitionTicks () {
 	// this is very sketchy but i dont know how else to do it
-	return (getAudioDispatcher().streamTime - getAudioDispatcher().pausedTime) * 10000;
+	return (_seek+getAudioDispatcher().streamTime - getAudioDispatcher().pausedTime) * 10000;
 }
 
 function getPlayMethod () {
 	// TODO figure out how to figure this out
-	return "Transcode";
+	return 0;
 }
 
 function getRepeatMode () {
@@ -94,7 +117,7 @@ function getNowPLayingQueue () {
 }
 
 function getCanSeek () {
-	return false;
+	return true;
 }
 
 function getIsMuted () {
@@ -143,5 +166,6 @@ module.exports = {
 	stop,
 	playPause,
 	resume,
-	pause
+	pause,
+	seek
 };

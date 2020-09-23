@@ -11,22 +11,29 @@ function openSocket () {
 			SupportedCommands: "Play,Playstate"
 		}
 	);
+	jellyfinClientManager.getJellyfinClient().ajax({
+
+		type: 'POST',
+
+		url: jellyfinClientManager.getJellyfinClient().getUrl('system/info/public'),
+
+		data: JSON.stringify({}),
+
+		contentType: 'application/json'
+
+	}).then((resp)=>{console.log(resp)})
 	jellyfinClientManager.getJellyfinEvents().on(jellyfinClientManager.getJellyfinClient(), "message", (type, data) => {
-		// console.log(data);
 		if (data.MessageType === "Play") {
 			if (data.Data.PlayCommand === "PlayNow") {
-				discordclientmanager.getDiscordClient().user.client.voice.connections.forEach((element) => {
-					playbackmanager.startPlaying(element, data.Data.ItemIds[data.Data.StartIndex || 0], false);
-					element.on("error", (error) => {
-						console.error(error);
-					});
-				});
+				playbackmanager.startPlaying(undefined, data.Data.ItemIds[data.Data.StartIndex || 0],0, false);
 			}
 		} else if (data.MessageType === "Playstate") {
 			if (data.Data.Command === "PlayPause") {
 				playbackmanager.playPause();
 			} else if (data.Data.Command === "Stop") {
 				playbackmanager.stop();
+			} else if (data.Data.Command === "Seek") {
+				playbackmanager.seek(data.Data.SeekPositionTicks);
 			}
 		}
 	});
