@@ -52,6 +52,8 @@ function seek (toSeek = 0) {
 	if (getAudioDispatcher()) {
 		startPlaying(undefined, undefined, ticksToSeconds(toSeek), _disconnectOnFinish);
 		jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
+	}else{
+		throw Error("No Song Playing");
 	}
 }
 

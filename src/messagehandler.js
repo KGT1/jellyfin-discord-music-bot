@@ -6,6 +6,9 @@ const {
 const {
 	getAudioDispatcher
 } = require("./dispachermanager");
+const {
+	hmsToSeconds
+} = require("./util");
 
 const discordclientmanager = require("./discordclientmanager");
 const jellyfinClientManager = require("./jellyfinclientmanager");
@@ -40,6 +43,15 @@ function getRandomDiscordColor () {
 
 	return ("#" + ("00" + (randomNumber(rS, rE)).toString(16)).substr(-2) + ("00" + (randomNumber(gS, gE)).toString(16)).substr(-2) + ("00" + (randomNumber(bS, bE)).toString(16)).substr(-2));
 }
+
+function getDiscordEmbedError(e){
+	return new Discord.MessageEmbed()
+		.setColor(0xff0000)
+		.setTitle("Error!")
+		.setTimestamp()
+		.setDescription("<:x:757935515445231651> " + e);
+}
+
 
 // Song Search, return the song itemID
 async function searchForItemID (searchString) {
@@ -100,11 +112,7 @@ async function playThis (message) {
 		try {
 			itemID = await searchForItemID(argument);
 		} catch (e) {
-			const noSong = new Discord.MessageEmbed()
-				.setColor(0xff0000)
-				.setTitle("Error!")
-				.setTimestamp()
-				.setDescription("<:x:757935515445231651> " + e);
+			const noSong = getDiscordEmbedError(e);
 			message.channel.send(noSong);
 			playbackmanager.stop(isSummendByPlay?discordClient.user.client.voice.connections.first():undefined);
 			return;
@@ -170,6 +178,15 @@ function handleChannelMessage (message) {
 		} else {
 			playbackmanager.stop();
 		}
+	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "seek")) {
+		const indexOfArgument = message.content.indexOf(CONFIG["discord-prefix"] + "seek") + (CONFIG["discord-prefix"] + "seek").length + 1;
+		const argument = message.content.slice(indexOfArgument);
+		try {
+			playbackmanager.seek(hmsToSeconds(argument)*10000000);
+		} catch (error) {
+			const errorMessage = getDiscordEmbedError(error);
+			message.channel.send(errorMessage);
+		}
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "help")) {
 		/* eslint-disable quotes */
 		const reply = new Discord.MessageEmbed()
@@ -187,6 +204,9 @@ function handleChannelMessage (message) {
 			}, {
 				name: `${CONFIG["discord-prefix"]}pause/resume`,
 				value: "Pause/Resume audio"
+			}, {
+				name: `${CONFIG["discord-prefix"]}seek`,
+				value: "Where to Seek to in seconds or MM:SS"
 			}, {
 				name: `${CONFIG["discord-prefix"]}help`,
 				value: "Display this help message"
