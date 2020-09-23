@@ -22,7 +22,7 @@ var isSummendByPlay = false;
 function getRandomDiscordColor () {
 	let random = Math.random();
 	function randomNumber (b, a) {
-		return Math.floor(random * Math.pow(Math.pow((b - a), 2), 1 / 2)) + (b > a ? a : b));
+		return Math.floor(random * Math.pow(Math.pow((b - a), 2), 1 / 2)) + (b > a ? a : b);
 	}
 
 	const GRANDIENT_START = "#AA5CC3";
