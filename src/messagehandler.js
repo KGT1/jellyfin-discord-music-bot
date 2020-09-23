@@ -80,9 +80,7 @@ function summonMessage (message) {
 	}
 }
 
-function songPlayMessage (message, itemID, argument){
-	getRandomDiscordColor();
-	//const imageUrl = getImageUrl(itemID);
+function songPlayMessage (message, argument){
 	const play = new Discord.MessageEmbed()
 		.setColor(getRandomDiscordColor())
 		.setTitle('Now Playing')
