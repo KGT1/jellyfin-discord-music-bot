@@ -171,6 +171,7 @@ function handleChannelMessage (message) {
 			playbackmanager.stop();
 		}
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "help")) {
+		/* eslint-disable quotes */
 		const reply = new Discord.MessageEmbed()
 			.setColor(getRandomDiscordColor())
 			.setTitle("<:musical_note:757938541123862638> " + "Jellyfin Discord Music Bot" + " <:musical_note:757938541123862638> ")
@@ -194,6 +195,7 @@ function handleChannelMessage (message) {
 				value: "Find the code for this bot at: https://github.com/KGT1/jellyfin-discord-music-bot"
 			});
 		message.channel.send(reply);
+		/* eslint-enable quotes */
 	}
 }
 
