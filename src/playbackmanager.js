@@ -25,15 +25,14 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 	isPaused = false;
 	currentPlayingItemId = itemID;
 	_disconnectOnFinish = disconnectOnFinish;
-	_seek=seekTo*1000;
+	_seek = seekTo * 1000;
 	async function playasync () {
 		const url = streamURLbuilder(itemID, voiceconnection.channel.bitrate);
-		setAudioDispatcher(voiceconnection.play(url ,{seek: seekTo}));
-		console.log(seekTo, ticksToSeconds(getPostitionTicks()));
-		if(seekTo){
+		setAudioDispatcher(voiceconnection.play(url, { seek: seekTo }));
+		if (seekTo) {
 			jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
-		}else{
-			jellyfinClientManager.getJellyfinClient().reportPlaybackStart({ userID: `${jellyfinClientManager.getJellyfinClient().getCurrentUserId()}`, itemID: `${itemID}`, canSeek: true ,playSessionId: getPlaySessionId(), playMethod:getPlayMethod()});
+		} else {
+			jellyfinClientManager.getJellyfinClient().reportPlaybackStart({ userID: `${jellyfinClientManager.getJellyfinClient().getCurrentUserId()}`, itemID: `${itemID}`, canSeek: true, playSessionId: getPlaySessionId(), playMethod: getPlayMethod() });
 		}
 
 		getAudioDispatcher().on("finish", () => {
@@ -44,14 +43,14 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 			}
 		});
 	}
-	playasync().catch((rsn) => { console.log(rsn); });
+	playasync().catch((rsn) => { console.error(rsn); });
 }
 /**
  * @param {Number} toSeek - where to seek in ticks
  */
-function seek(toSeek = 0){
-	if(getAudioDispatcher()){
-		startPlaying(undefined,undefined,ticksToSeconds(toSeek),_disconnectOnFinish);
+function seek (toSeek = 0) {
+	if (getAudioDispatcher()) {
+		startPlaying(undefined, undefined, ticksToSeconds(toSeek), _disconnectOnFinish);
 		jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
 	}
 }
@@ -64,14 +63,13 @@ function stop (disconnectVoiceConnection) {
 	if (disconnectVoiceConnection) {
 		disconnectVoiceConnection.disconnect();
 	}
-	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped({ userId: jellyfinClientManager.getJellyfinClient().getCurrentUserId(), itemId: currentPlayingItemId ,playSessionId: getPlaySessionId()});
+	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped({ userId: jellyfinClientManager.getJellyfinClient().getCurrentUserId(), itemId: currentPlayingItemId, playSessionId: getPlaySessionId() });
 	if (getAudioDispatcher()) { getAudioDispatcher().destroy(); }
 	setAudioDispatcher(undefined);
 	clearInterval(progressInterval);
 }
 function pause () {
 	isPaused = true;
-	console.log("here paused is changed", isPaused);
 	jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
 	getAudioDispatcher().pause(true);
 }
@@ -86,7 +84,7 @@ function playPause () {
 
 function getPostitionTicks () {
 	// this is very sketchy but i dont know how else to do it
-	return (_seek+getAudioDispatcher().streamTime - getAudioDispatcher().pausedTime) * 10000;
+	return (_seek + getAudioDispatcher().streamTime - getAudioDispatcher().pausedTime) * 10000;
 }
 
 function getPlayMethod () {

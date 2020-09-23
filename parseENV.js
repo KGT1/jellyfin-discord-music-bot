@@ -10,5 +10,5 @@ if (!configfile["jellyfin-password"]) { configfile["jellyfin-password"] = proces
 if (!configfile["jellyfin-app-name"]) { configfile["jellyfin-app-name"] = process.env.JELLYFIN_APP_NAME; }
 
 fs.writeFile(filename, JSON.stringify(configfile, null, 1), (err) => {
-	if (err) return console.log(err);
+	if (err) return console.error(err);
 });

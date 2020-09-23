@@ -15,6 +15,7 @@
         "quotes": ["error", "double"],
         "indent": ["error", "tab"],
         "no-unused-vars": ["error"],
-        "no-tabs":["error",{"allowIndentationTabs":true}]
+        "no-tabs":["error",{"allowIndentationTabs":true}],
+        "no-console":["warn",{"allow":["error"]}]
     }
 }

@@ -3,8 +3,8 @@ function checkJellyfinItemIDRegex (strgintomatch) {
 	return regexresult;
 }
 
-function ticksToSeconds (ticks){
-	return ticks/10000000;
+function ticksToSeconds (ticks) {
+	return ticks / 10000000;
 }
 
 module.exports = {

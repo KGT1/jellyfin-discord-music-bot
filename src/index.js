@@ -15,10 +15,6 @@ jellyfinClientManager.getJellyfinClient().authenticateUserByName(CONFIG["jellyfi
 	jellyfinClientManager.getJellyfinClient().setAuthenticationInfo(response.AccessToken, response.SessionInfo.UserId);
 });
 
-discordClient.on("ready", () => {
-	console.log("connected to Discord");
-});
-
 discordClient.on("message", message => {
 	handleChannelMessage(message);
 });
