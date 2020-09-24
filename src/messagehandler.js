@@ -121,7 +121,7 @@ async function playThis (message) {
 
 	discordClient.user.client.voice.connections.forEach((element) => {
 		songPlayMessage(message, argument);
-		playbackmanager.startPlaying(element, itemID, 0, isSummendByPlay);
+		playbackmanager.startPlaying(element, [itemID], 0, 0, isSummendByPlay);
 	});
 }
 
@@ -149,19 +149,16 @@ function handleChannelMessage (message) {
 			.setDescription("<:wave:757938481585586226> " + desc);
 		message.channel.send(vcJoin);
 	} else if ((message.content.startsWith(CONFIG["discord-prefix"] + "pause")) || (message.content.startsWith(CONFIG["discord-prefix"] + "resume"))) {
-		if (getAudioDispatcher() !== undefined) {
+		try {
 			playbackmanager.playPause();
 			const noPlay = new Discord.MessageEmbed()
 				.setColor(0xff0000)
 				.setTitle("<:play_pause:757940598106882049> " + "Paused/Resumed.")
 				.setTimestamp();
 			message.channel.send(noPlay);
-		} else {
-			const noPlay = new Discord.MessageEmbed()
-				.setColor(0xff0000)
-				.setTitle("<:x:757935515445231651> " + "There is nothing Playing right now!")
-				.setTimestamp();
-			message.channel.send(noPlay);
+		} catch (error) {
+			const errorMessage = getDiscordEmbedError(error);
+			message.channel.send(errorMessage);
 		}
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "play")) {
 		if (discordClient.user.client.voice.connections.size < 1) {
@@ -187,6 +184,13 @@ function handleChannelMessage (message) {
 			const errorMessage = getDiscordEmbedError(error);
 			message.channel.send(errorMessage);
 		}
+	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "skip")) {
+		try {
+			playbackmanager.nextTrack()
+		} catch (error) {
+			const errorMessage = getDiscordEmbedError(error);
+			message.channel.send(errorMessage);
+		}
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "help")) {
 		/* eslint-disable quotes */
 		const reply = new Discord.MessageEmbed()
@@ -207,6 +211,9 @@ function handleChannelMessage (message) {
 			}, {
 				name: `${CONFIG["discord-prefix"]}seek`,
 				value: "Where to Seek to in seconds or MM:SS"
+			}, {
+				name: `${CONFIG["discord-prefix"]}skip`,
+				value: "Skip this Song"
 			}, {
 				name: `${CONFIG["discord-prefix"]}help`,
 				value: "Display this help message"
