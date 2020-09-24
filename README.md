@@ -41,6 +41,7 @@ docker run -d \
     -e JELLYFIN_USERNAME="" \
     -e JELLYFIN_PASSWORD="" \
     -e JELLYFIN_APP_NAME="Jellyfin Discord Music Bot" \
+    --restart unless-stopped \
     kgt1/jellyfin-discord-music-bot
 ```
 ## How to build
