@@ -1,6 +1,6 @@
 const jellyfinClientManager = require("./jellyfinclientmanager");
 const playbackmanager = require("./playbackmanager");
-const { ticksToSeconds }= require("./util");
+const { ticksToSeconds } = require("./util");
 
 function openSocket () {
 	jellyfinClientManager.getJellyfinClient().openWebSocket();
@@ -12,7 +12,6 @@ function openSocket () {
 		}
 	);
 	jellyfinClientManager.getJellyfinEvents().on(jellyfinClientManager.getJellyfinClient(), "message", (type, data) => {
-		console.log(data);
 		if (data.MessageType === "Play") {
 			if (data.Data.PlayCommand === "PlayNow") {
 				playbackmanager.startPlaying(undefined, data.Data.ItemIds, data.Data.StartIndex || 0, 0, false);
@@ -23,8 +22,8 @@ function openSocket () {
 			} else if (data.Data.Command === "Stop") {
 				playbackmanager.stop();
 			} else if (data.Data.Command === "Seek") {
-				//because the server sends seek an privious track at same time so i have to do timing
-				setTimeout(async()=>{playbackmanager.seek(data.Data.SeekPositionTicks);},20)
+				// because the server sends seek an privious track at same time so i have to do timing
+				setTimeout(async () => { playbackmanager.seek(data.Data.SeekPositionTicks); }, 20);
 			} else if (data.Data.Command === "NextTrack") {
 				try {
 					playbackmanager.nextTrack();
@@ -32,12 +31,11 @@ function openSocket () {
 					console.error(error);
 				}
 			} else if (data.Data.Command === "PreviousTrack") {
-				try{
-					console.log(ticksToSeconds(playbackmanager.getPostitionTicks())<10,ticksToSeconds(playbackmanager.getPostitionTicks()),` (${playbackmanager.getPostitionTicks()})`," < ",10)
-					if(ticksToSeconds(playbackmanager.getPostitionTicks())<10){
+				try {
+					if (ticksToSeconds(playbackmanager.getPostitionTicks()) < 10) {
 						playbackmanager.previousTrack();
 					}
-				}catch(error){
+				} catch (error) {
 					console.error(error);
 				}
 			}

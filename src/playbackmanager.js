@@ -7,8 +7,7 @@ const {
 	ticksToSeconds
 } = require("./util");
 
-
-//this whole thing should be a class but its probably too late now.
+// this whole thing should be a class but its probably too late now.
 
 var currentPlayingPlaylist;
 var currentPlayingPlaylistIndex;
@@ -20,20 +19,20 @@ var _seek;
 
 const jellyfinClientManager = require("./jellyfinclientmanager");
 
-function streamURLbuilder(itemID, bitrate) {
+function streamURLbuilder (itemID, bitrate) {
 	// so the server transcodes. Seems appropriate as it has the source file.
 	const supportedCodecs = "opus";
 	const supportedContainers = "ogg,opus";
 	return `${jellyfinClientManager.getJellyfinClient().serverAddress()}/Audio/${itemID}/universal?UserId=${jellyfinClientManager.getJellyfinClient().getCurrentUserId()}&DeviceId=${jellyfinClientManager.getJellyfinClient().deviceId()}&MaxStreamingBitrate=${bitrate}&Container=${supportedContainers}&AudioCodec=${supportedCodecs}&api_key=${jellyfinClientManager.getJellyfinClient().accessToken()}&TranscodingContainer=ts&TranscodingProtocol=hls`;
 }
 
-function startPlaying(voiceconnection = discordclientmanager.getDiscordClient().user.client.voice.connections.first(), itemIDPlaylist = currentPlayingPlaylist, playlistIndex = currentPlayingPlaylistIndex, seekTo, disconnectOnFinish = _disconnectOnFinish) {
+function startPlaying (voiceconnection = discordclientmanager.getDiscordClient().user.client.voice.connections.first(), itemIDPlaylist = currentPlayingPlaylist, playlistIndex = currentPlayingPlaylistIndex, seekTo, disconnectOnFinish = _disconnectOnFinish) {
 	isPaused = false;
 	currentPlayingPlaylist = itemIDPlaylist;
 	currentPlayingPlaylistIndex = playlistIndex;
 	_disconnectOnFinish = disconnectOnFinish;
 	_seek = seekTo * 1000;
-	async function playasync() {
+	async function playasync () {
 		const url = streamURLbuilder(itemIDPlaylist[playlistIndex], voiceconnection.channel.bitrate);
 		setAudioDispatcher(voiceconnection.play(url, {
 			seek: seekTo
@@ -52,16 +51,13 @@ function startPlaying(voiceconnection = discordclientmanager.getDiscordClient().
 
 		getAudioDispatcher().on("finish", () => {
 			if (currentPlayingPlaylist.length < playlistIndex) {
-				console.log("PLAYLIST END")
-
 				if (disconnectOnFinish) {
 					stop(voiceconnection, currentPlayingPlaylist[playlistIndex - 1]);
-				}else {
+				} else {
 					stop(undefined, currentPlayingPlaylist[playlistIndex - 1]);
 				}
-
 			} else {
-				startPlaying(voiceconnection, itemIDPlaylist, currentPlayingPlaylistIndex+1, 0)
+				startPlaying(voiceconnection, itemIDPlaylist, currentPlayingPlaylistIndex + 1, 0);
 			}
 		});
 	}
@@ -72,7 +68,7 @@ function startPlaying(voiceconnection = discordclientmanager.getDiscordClient().
 /**
  * @param {Number} toSeek - where to seek in ticks
  */
-function seek(toSeek = 0) {
+function seek (toSeek = 0) {
 	if (getAudioDispatcher()) {
 		startPlaying(undefined, undefined, undefined, ticksToSeconds(toSeek), _disconnectOnFinish);
 		jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
@@ -81,35 +77,32 @@ function seek(toSeek = 0) {
 	}
 }
 
-function nextTrack(){
-	//console.log(currentPlayingPlaylistIndex + 1, currentPlayingPlaylist.length);
-	if(!(currentPlayingPlaylist)){
+function nextTrack () {
+	// console.log(currentPlayingPlaylistIndex + 1, currentPlayingPlaylist.length);
+	if (!(currentPlayingPlaylist)) {
 		throw Error("There is currently nothing playing");
-	}else if(currentPlayingPlaylistIndex + 1 >= currentPlayingPlaylist.length){
+	} else if (currentPlayingPlaylistIndex + 1 >= currentPlayingPlaylist.length) {
 		throw Error("This is the Last song");
 	}
-	startPlaying(undefined, undefined, currentPlayingPlaylistIndex + 1, 0, _disconnectOnFinish)
+	startPlaying(undefined, undefined, currentPlayingPlaylistIndex + 1, 0, _disconnectOnFinish);
 }
 
-function previousTrack(){
-	if(ticksToSeconds(getPostitionTicks())<10){
-		console.log(currentPlayingPlaylistIndex , currentPlayingPlaylist.length);
-		if(!(currentPlayingPlaylist)){
+function previousTrack () {
+	if (ticksToSeconds(getPostitionTicks()) < 10) {
+		if (!(currentPlayingPlaylist)) {
 			throw Error("There is currently nothing playing");
-		}else if(currentPlayingPlaylistIndex -1 < 0){
-			startPlaying(undefined, undefined, currentPlayingPlaylistIndex, 0, _disconnectOnFinish)
+		} else if (currentPlayingPlaylistIndex - 1 < 0) {
+			startPlaying(undefined, undefined, currentPlayingPlaylistIndex, 0, _disconnectOnFinish);
 			throw Error("This is the First song");
 		}
-		startPlaying(undefined, undefined, currentPlayingPlaylistIndex - 1, 0, _disconnectOnFinish)
+		startPlaying(undefined, undefined, currentPlayingPlaylistIndex - 1, 0, _disconnectOnFinish);
 	}
 }
 
 /**
  * @param {Object=} disconnectVoiceConnection - Optional The voice Connection do disconnect from
  */
-function stop(disconnectVoiceConnection, itemId = getItemId()) {
-	console.log("im getting called");
-	console
+function stop (disconnectVoiceConnection, itemId = getItemId()) {
 	isPaused = true;
 	if (disconnectVoiceConnection) {
 		disconnectVoiceConnection.disconnect();
@@ -126,20 +119,20 @@ function stop(disconnectVoiceConnection, itemId = getItemId()) {
 	clearInterval(progressInterval);
 }
 
-function pause() {
+function pause () {
 	isPaused = true;
 	jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
 	getAudioDispatcher().pause(true);
 }
 
-function resume() {
+function resume () {
 	isPaused = false;
 	jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
 	getAudioDispatcher().resume();
 }
 
-function playPause() {
-	if(!(getAudioDispatcher())){
+function playPause () {
+	if (!(getAudioDispatcher())) {
 		throw Error("There is nothing Playing right now!");
 	}
 	if (getAudioDispatcher().paused) {
@@ -149,35 +142,34 @@ function playPause() {
 	}
 }
 
-function getPostitionTicks() {
+function getPostitionTicks () {
 	// this is very sketchy but i dont know how else to do it
-	console.log((_seek + getAudioDispatcher().streamTime - getAudioDispatcher().pausedTime) * 10000);
 	return (_seek + getAudioDispatcher().streamTime - getAudioDispatcher().pausedTime) * 10000;
 }
 
-function getPlayMethod() {
+function getPlayMethod () {
 	// TODO figure out how to figure this out
 	return "Transcode";
 }
 
-function getRepeatMode() {
-	if(isRepeat){
+function getRepeatMode () {
+	if (isRepeat) {
 		return "RepeatOne";
-	}else{
+	} else {
 		return "RepeatNone";
 	}
 }
 
-function getPlaylistItemId() {
+function getPlaylistItemId () {
 	return getItemId();
 }
 
-function getPlaySessionId() {
+function getPlaySessionId () {
 	// i think its just a number which you dont need to retrieve but need to report
 	return "ae2436edc6b91b11d72aeaa67f84e0ea";
 }
 
-function getNowPLayingQueue() {
+function getNowPLayingQueue () {
 	return [{
 		Id: getItemId(),
 		// as I curently dont support Playlists
@@ -185,23 +177,23 @@ function getNowPLayingQueue() {
 	}];
 }
 
-function getCanSeek() {
+function getCanSeek () {
 	return true;
 }
 
-function getIsMuted() {
+function getIsMuted () {
 	return false;
 }
 
-function getVolumeLevel() {
+function getVolumeLevel () {
 	return 100;
 }
 
-function getItemId() {
+function getItemId () {
 	return currentPlayingPlaylist[currentPlayingPlaylistIndex];
 }
 
-function getIsPaused() {
+function getIsPaused () {
 	// AudioDispacker Paused is to slow
 
 	if (isPaused === undefined) {
@@ -211,11 +203,11 @@ function getIsPaused() {
 	return isPaused;
 }
 
-function setIsRepeat(arg){
-	isRepeat=arg;
+function setIsRepeat (arg) {
+	isRepeat = arg;
 }
 
-function getProgressPayload() {
+function getProgressPayload () {
 	const payload = {
 		CanSeek: getCanSeek(),
 		IsMuted: getIsMuted(),

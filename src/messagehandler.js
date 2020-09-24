@@ -4,9 +4,6 @@ const {
 	checkJellyfinItemIDRegex
 } = require("./util");
 const {
-	getAudioDispatcher
-} = require("./dispachermanager");
-const {
 	hmsToSeconds
 } = require("./util");
 
@@ -20,7 +17,7 @@ var isSummendByPlay = false;
 
 // random Color of the Jellyfin Logo Gradient
 function getRandomDiscordColor () {
-	let random = Math.random();
+	const random = Math.random();
 	function randomNumber (b, a) {
 		return Math.floor(random * Math.pow(Math.pow((b - a), 2), 1 / 2)) + (b > a ? a : b);
 	}
@@ -186,7 +183,7 @@ function handleChannelMessage (message) {
 		}
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "skip")) {
 		try {
-			playbackmanager.nextTrack()
+			playbackmanager.nextTrack();
 		} catch (error) {
 			const errorMessage = getDiscordEmbedError(error);
 			message.channel.send(errorMessage);
