@@ -64,6 +64,21 @@ async function searchForItemID (searchString) {
 	}
 }
 
+async function searchForSongMetadata (searchString) {
+	const response = await jellyfinClientManager.getJellyfinClient().getSearchHints({
+		searchTerm: searchString,
+		includeItemTypes: "Audio"
+	});
+
+	if (response.TotalRecordCount < 1) {
+		throw Error("Found no Song");
+	} else {
+		const albumArtistTop = response.SearchHints[0].Artists[0];
+		const songName = response.SearchHints[0].Name;
+		return [albumArtistTop, songName];
+	}
+}
+
 function summon (voiceChannel) {
 	voiceChannel.join();
 }
@@ -88,12 +103,12 @@ function summonMessage (message) {
 	}
 }
 
-function songPlayMessage (message, argument) {
+function songPlayMessage (message, name, artist) {
 	const play = new Discord.MessageEmbed()
 		.setColor(getRandomDiscordColor())
 		.setTitle("Now Playing")
 		.setTimestamp()
-		.setDescription("<:mag_right:757935694403338380> " + "Top result for: " + argument);
+		.setDescription("<:mag_right:757935694403338380> **" + name + "** by **" + artist + "**");
 	message.channel.send(play);
 }
 
@@ -101,6 +116,7 @@ async function playThis (message) {
 	const indexOfItemID = message.content.indexOf(CONFIG["discord-prefix"] + "play") + (CONFIG["discord-prefix"] + "play").length + 1;
 	const argument = message.content.slice(indexOfItemID);
 	let itemID;
+	let songMetadata;
 	// check if play command was used with itemID
 	const regexresults = checkJellyfinItemIDRegex(argument);
 	if (regexresults) {
@@ -108,6 +124,15 @@ async function playThis (message) {
 	} else {
 		try {
 			itemID = await searchForItemID(argument);
+			songMetadata = await searchForSongMetadata(argument);
+		} catch (e) {
+			const noSong = getDiscordEmbedError(e);
+			message.channel.send(noSong);
+			playbackmanager.stop(isSummendByPlay ? discordClient.user.client.voice.connections.first() : undefined);
+			return;
+		}
+		try {
+
 		} catch (e) {
 			const noSong = getDiscordEmbedError(e);
 			message.channel.send(noSong);
@@ -117,7 +142,7 @@ async function playThis (message) {
 	}
 
 	discordClient.user.client.voice.connections.forEach((element) => {
-		songPlayMessage(message, argument);
+		songPlayMessage(message, songMetadata[1], songMetadata[0]);
 		playbackmanager.startPlaying(element, [itemID], 0, 0, isSummendByPlay);
 	});
 }
