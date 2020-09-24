@@ -131,14 +131,6 @@ async function playThis (message) {
 			playbackmanager.stop(isSummendByPlay ? discordClient.user.client.voice.connections.first() : undefined);
 			return;
 		}
-		try {
-
-		} catch (e) {
-			const noSong = getDiscordEmbedError(e);
-			message.channel.send(noSong);
-			playbackmanager.stop(isSummendByPlay ? discordClient.user.client.voice.connections.first() : undefined);
-			return;
-		}
 	}
 
 	discordClient.user.client.voice.connections.forEach((element) => {
