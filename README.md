@@ -15,11 +15,11 @@ disconnect | Disconnect from all current Voice Channels
 play | Play the following item(can be the name of the song or the Stream URL)
 pause/resume | Pause/Resume audio
 seek | Where to Seek to in seconds or MM:SS
+skip | Skip this Song
 help | Display the help message
 
 ### Limitations
 
-- Playlist (soon)
 - [Playing Video Content](https://support.discord.com/hc/en-us/community/posts/360059238512-Add-Go-Live-support-for-API) (if Discord ever adds this, I'll implement it into this Bot)
 
 ## Getting Started
