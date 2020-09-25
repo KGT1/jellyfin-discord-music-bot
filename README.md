@@ -20,6 +20,7 @@ help | Display the help message
 
 ### Limitations
 
+- Multi Server support.
 - [Playing Video Content](https://support.discord.com/hc/en-us/community/posts/360059238512-Add-Go-Live-support-for-API) (if Discord ever adds this, I'll implement it into this Bot)
 
 ## Getting Started
@@ -44,6 +45,25 @@ docker run -d \
     --restart unless-stopped \
     kgt1/jellyfin-discord-music-bot
 ```
+
+Alternatively you can run the Application natively with NodeJS:
+
+Dependencies:
+
+- npm 6.14.6
+- NodeJS v12.18.3
+- ffmpeg 4.2.4
+```
+git clone https://github.com/kgt1/jellyfin-discord-music-bot.git
+cd jellyfin-discord-music-bot
+npm install
+```
+edit config.json and add your token,server-address etc.
+```
+npm run start
+```
+
+
 ## How to build
 ```
 git clone https://github.com/kgt1/jellyfin-discord-music-bot.git
