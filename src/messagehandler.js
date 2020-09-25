@@ -50,7 +50,7 @@ function getDiscordEmbedError (e) {
 		.setDescription("<:x:757935515445231651> " + e);
 }
 
-// Song Search, return the song itemID
+// Song Search, return the song itemID + metadata
 async function searchForItemID (searchString) {
 	const response = await jellyfinClientManager.getJellyfinClient().getSearchHints({
 		searchTerm: searchString,
@@ -60,22 +60,10 @@ async function searchForItemID (searchString) {
 	if (response.TotalRecordCount < 1) {
 		throw Error("Found no Song");
 	} else {
-		return response.SearchHints[0].ItemId;
-	}
-}
-
-async function searchForSongMetadata (searchString) {
-	const response = await jellyfinClientManager.getJellyfinClient().getSearchHints({
-		searchTerm: searchString,
-		includeItemTypes: "Audio"
-	});
-
-	if (response.TotalRecordCount < 1) {
-		throw Error("Found no Song");
-	} else {
+		const songItemId = response.SearchHints[0].ItemId;
 		const albumArtistTop = response.SearchHints[0].Artists[0];
 		const songName = response.SearchHints[0].Name;
-		return [albumArtistTop, songName];
+		return [songItemId, albumArtistTop, songName];
 	}
 }
 
@@ -123,8 +111,8 @@ async function playThis (message) {
 		itemID = regexresults[0];
 	} else {
 		try {
-			itemID = await searchForItemID(argument);
-			songMetadata = await searchForSongMetadata(argument);
+			songMetadata = await searchForItemID(argument);
+			itemID = songMetadata[0];
 		} catch (e) {
 			const noSong = getDiscordEmbedError(e);
 			message.channel.send(noSong);
@@ -134,7 +122,7 @@ async function playThis (message) {
 	}
 
 	discordClient.user.client.voice.connections.forEach((element) => {
-		songPlayMessage(message, songMetadata[1], songMetadata[0]);
+		songPlayMessage(message, songMetadata[2], songMetadata[1]);
 		playbackmanager.startPlaying(element, [itemID], 0, 0, isSummendByPlay);
 	});
 }
