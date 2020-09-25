@@ -4,9 +4,12 @@ const {
 	checkJellyfinItemIDRegex
 } = require("./util");
 const {
-	hmsToSeconds
+	hmsToSeconds,
+	ticksToSeconds,
+	getDiscordEmbedError
 } = require("./util");
 
+const interactivemsghandler = require("./interactivemsghandler");
 const discordclientmanager = require("./discordclientmanager");
 const jellyfinClientManager = require("./jellyfinclientmanager");
 const playbackmanager = require("./playbackmanager");
@@ -40,14 +43,6 @@ function getRandomDiscordColor () {
 	bE = parseInt(bE, 16);
 
 	return ("#" + ("00" + (randomNumber(rS, rE)).toString(16)).substr(-2) + ("00" + (randomNumber(gS, gE)).toString(16)).substr(-2) + ("00" + (randomNumber(bS, bE)).toString(16)).substr(-2));
-}
-
-function getDiscordEmbedError (e) {
-	return new Discord.MessageEmbed()
-		.setColor(0xff0000)
-		.setTitle("Error!")
-		.setTimestamp()
-		.setDescription("<:x:757935515445231651> " + e);
 }
 
 // Song Search, return the song itemID
@@ -88,13 +83,21 @@ function summonMessage (message) {
 	}
 }
 
-function songPlayMessage (message, argument) {
-	const play = new Discord.MessageEmbed()
-		.setColor(getRandomDiscordColor())
-		.setTitle("Now Playing")
-		.setTimestamp()
-		.setDescription("<:mag_right:757935694403338380> " + "Top result for: " + argument);
-	message.channel.send(play);
+async function songPlayMessage (message, itemId) {
+	const itemIdDetails = await jellyfinClientManager.getJellyfinClient().getItem(jellyfinClientManager.getJellyfinClient().getCurrentUserId(), itemId);
+	const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId, { type: "Primary" });
+	try {
+		interactivemsghandler.init(message, itemIdDetails.Name, itemIdDetails.Artists[0] || "VA", imageURL,
+			`${jellyfinClientManager.getJellyfinClient().serverAddress()}/web/index.html#!/details?id=${itemIdDetails.AlbumId}`,
+			undefined,
+			((ticksToSeconds(playbackmanager.getPostitionTicks()) < 10) ? playbackmanager.previousTrack : playbackmanager.seek),
+			playbackmanager.playPause,
+			playbackmanager.stop,
+			playbackmanager.nextTrack,
+			playbackmanager.setIsRepeat);
+	} catch (error) {
+
+	}
 }
 
 async function playThis (message) {
@@ -117,7 +120,7 @@ async function playThis (message) {
 	}
 
 	discordClient.user.client.voice.connections.forEach((element) => {
-		songPlayMessage(message, argument);
+		songPlayMessage(message, itemID);
 		playbackmanager.startPlaying(element, [itemID], 0, 0, isSummendByPlay);
 	});
 }

@@ -1,3 +1,5 @@
+
+const interactivemsghandler = require("./interactivemsghandler");
 const discordclientmanager = require("./discordclientmanager");
 const {
 	getAudioDispatcher,
@@ -104,6 +106,9 @@ function previousTrack () {
  */
 function stop (disconnectVoiceConnection, itemId = getItemId()) {
 	isPaused = true;
+	if (interactivemsghandler.hasMessage()) {
+		interactivemsghandler.destroy();
+	}
 	if (disconnectVoiceConnection) {
 		disconnectVoiceConnection.disconnect();
 	}
@@ -190,7 +195,9 @@ function getVolumeLevel () {
 }
 
 function getItemId () {
-	return currentPlayingPlaylist[currentPlayingPlaylistIndex];
+	if (typeof currentPlayingPlaylist !== "undefined") {
+		return currentPlayingPlaylist[currentPlayingPlaylistIndex];
+	}
 }
 
 function getIsPaused () {
@@ -204,6 +211,11 @@ function getIsPaused () {
 }
 
 function setIsRepeat (arg) {
+	if (arg === undefined) {
+		if (!(isRepeat === undefined)) {
+			isRepeat = !isRepeat;
+		}
+	}
 	isRepeat = arg;
 }
 

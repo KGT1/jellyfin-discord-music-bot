@@ -19,8 +19,18 @@ function hmsToSeconds (str) {
 	return s;
 }
 
+function getDiscordEmbedError (e) {
+	const Discord = require("discord.js");
+	return new Discord.MessageEmbed()
+		.setColor(0xff0000)
+		.setTitle("Error!")
+		.setTimestamp()
+		.setDescription("<:x:757935515445231651> " + e);
+}
+
 module.exports = {
 	checkJellyfinItemIDRegex,
 	ticksToSeconds,
-	hmsToSeconds
+	hmsToSeconds,
+	getDiscordEmbedError
 };
