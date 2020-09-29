@@ -22,7 +22,7 @@ var _seek;
 const jellyfinClientManager = require("./jellyfinclientmanager");
 
 function streamURLbuilder (itemID, bitrate) {
-	// so the server transcodes. Seems appropriate as it has the source file.
+	// so the server transcodes. Seems appropriate as it has the source file.(doesnt yet work i dont know why)
 	const supportedCodecs = "opus";
 	const supportedContainers = "ogg,opus";
 	return `${jellyfinClientManager.getJellyfinClient().serverAddress()}/Audio/${itemID}/universal?UserId=${jellyfinClientManager.getJellyfinClient().getCurrentUserId()}&DeviceId=${jellyfinClientManager.getJellyfinClient().deviceId()}&MaxStreamingBitrate=${bitrate}&Container=${supportedContainers}&AudioCodec=${supportedCodecs}&api_key=${jellyfinClientManager.getJellyfinClient().accessToken()}&TranscodingContainer=ts&TranscodingProtocol=hls`;
