@@ -13,7 +13,6 @@ const {
 
 var currentPlayingPlaylist;
 var currentPlayingPlaylistIndex;
-var progressInterval;
 var isPaused;
 var isRepeat;
 var _disconnectOnFinish;
@@ -121,7 +120,6 @@ function stop (disconnectVoiceConnection, itemId = getItemId()) {
 		getAudioDispatcher().destroy();
 	}
 	setAudioDispatcher(undefined);
-	clearInterval(progressInterval);
 }
 
 function pause () {
