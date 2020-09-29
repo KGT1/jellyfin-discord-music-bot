@@ -90,7 +90,7 @@ async function songPlayMessage (message, itemId) {
 		interactivemsghandler.init(message, itemIdDetails.Name, itemIdDetails.Artists[0] || "VA", imageURL,
 			`${jellyfinClientManager.getJellyfinClient().serverAddress()}/web/index.html#!/details?id=${itemIdDetails.AlbumId}`,
 			undefined,
-			((ticksToSeconds(playbackmanager.getPostitionTicks()) < 10) ? playbackmanager.previousTrack : playbackmanager.seek),
+			((ticksToSeconds(playbackmanager.getPostitionTicks()) > 10) ? playbackmanager.previousTrack : playbackmanager.seek),
 			playbackmanager.playPause,
 			playbackmanager.stop,
 			playbackmanager.nextTrack,
