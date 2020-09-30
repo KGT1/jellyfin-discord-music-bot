@@ -44,7 +44,11 @@ function startUpate (callback) {
 }
 
 function updateCurrentSongMessage (title, artist, imageURL, itemURL, ticksLength, playlistIndex, playlistLenth) {
-	iapm.updateCurrentSongMessage(title, artist, imageURL, itemURL, ticksLength, playlistIndex, playlistLenth);
+	if (typeof iapm !== "undefined") {
+		iapm.updateCurrentSongMessage(title, artist, imageURL, itemURL, ticksLength, playlistIndex, playlistLenth);
+	} else {
+		throw Error("No Interactive Message Found");
+	}
 }
 
 module.exports = {
