@@ -42,6 +42,7 @@ docker run -d \
     -e JELLYFIN_USERNAME="" \
     -e JELLYFIN_PASSWORD="" \
     -e JELLYFIN_APP_NAME="Jellyfin Discord Music Bot" \
+    -e MESSAGE_UPDATE_INTERVAL="2000" \
     --restart unless-stopped \
     kgt1/jellyfin-discord-music-bot
 ```

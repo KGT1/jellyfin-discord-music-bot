@@ -5,11 +5,9 @@ const {
 } = require("./util");
 const {
 	hmsToSeconds,
-	ticksToSeconds,
 	getDiscordEmbedError
 } = require("./util");
 
-const interactivemsghandler = require("./interactivemsghandler");
 const discordclientmanager = require("./discordclientmanager");
 const jellyfinClientManager = require("./jellyfinclientmanager");
 const playbackmanager = require("./playbackmanager");
@@ -83,23 +81,6 @@ function summonMessage (message) {
 	}
 }
 
-async function songPlayMessage (message, itemId) {
-	const itemIdDetails = await jellyfinClientManager.getJellyfinClient().getItem(jellyfinClientManager.getJellyfinClient().getCurrentUserId(), itemId);
-	const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId, { type: "Primary" });
-	try {
-		interactivemsghandler.init(message, itemIdDetails.Name, itemIdDetails.Artists[0] || "VA", imageURL,
-			`${jellyfinClientManager.getJellyfinClient().serverAddress()}/web/index.html#!/details?id=${itemIdDetails.AlbumId}`,
-			undefined,
-			((ticksToSeconds(playbackmanager.getPostitionTicks()) > 10) ? playbackmanager.previousTrack : playbackmanager.seek),
-			playbackmanager.playPause,
-			playbackmanager.stop,
-			playbackmanager.nextTrack,
-			playbackmanager.setIsRepeat);
-	} catch (error) {
-
-	}
-}
-
 async function playThis (message) {
 	const indexOfItemID = message.content.indexOf(CONFIG["discord-prefix"] + "play") + (CONFIG["discord-prefix"] + "play").length + 1;
 	const argument = message.content.slice(indexOfItemID);
@@ -120,8 +101,8 @@ async function playThis (message) {
 	}
 
 	discordClient.user.client.voice.connections.forEach((element) => {
-		songPlayMessage(message, itemID);
 		playbackmanager.startPlaying(element, [itemID], 0, 0, isSummendByPlay);
+		playbackmanager.spawnPlayMessage(message);
 	});
 }
 
@@ -187,6 +168,15 @@ function handleChannelMessage (message) {
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "skip")) {
 		try {
 			playbackmanager.nextTrack();
+		} catch (error) {
+			const errorMessage = getDiscordEmbedError(error);
+			message.channel.send(errorMessage);
+		}
+	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "add")) {
+		const indexOfArgument = message.content.indexOf(CONFIG["discord-prefix"] + "add") + (CONFIG["discord-prefix"] + "add").length + 1;
+		const argument = message.content.slice(indexOfArgument);
+		try {
+			playbackmanager.addTrack(argument);
 		} catch (error) {
 			const errorMessage = getDiscordEmbedError(error);
 			message.channel.send(errorMessage);

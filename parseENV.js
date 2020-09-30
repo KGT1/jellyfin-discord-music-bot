@@ -8,6 +8,7 @@ if (!configfile["server-adress"]) { configfile["server-adress"] = process.env.JE
 if (!configfile["jellyfin-username"]) { configfile["jellyfin-username"] = process.env.JELLYFIN_USERNAME; }
 if (!configfile["jellyfin-password"]) { configfile["jellyfin-password"] = process.env.JELLYFIN_PASSWORD; }
 if (!configfile["jellyfin-app-name"]) { configfile["jellyfin-app-name"] = process.env.JELLYFIN_APP_NAME; }
+if (!configfile["interactive-seek-bar-update-intervall"]) { configfile["interactive-seek-bar-update-intervall"] = parseInt(process.env.MESSAGE_UPDATE_INTERVAL); }
 
 fs.writeFile(filename, JSON.stringify(configfile, null, 1), (err) => {
 	if (err) return console.error(err);

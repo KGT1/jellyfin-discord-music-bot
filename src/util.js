@@ -19,6 +19,19 @@ function hmsToSeconds (str) {
 	return s;
 }
 
+function secondsToHms (totalSeconds) {
+	const hours = Math.floor(totalSeconds / 3600);
+	totalSeconds %= 3600;
+	const minutes = Math.floor(totalSeconds / 60);
+	let seconds = Math.floor(totalSeconds % 60);
+	seconds = seconds < 10 && seconds > 0 ? `0${seconds}` : `${seconds}`;
+	if (hours > 0) {
+		return `${hours}:${minutes}:${seconds}`;
+	} else {
+		return `${minutes}:${seconds}`;
+	}
+}
+
 function getDiscordEmbedError (e) {
 	const Discord = require("discord.js");
 	return new Discord.MessageEmbed()
@@ -32,5 +45,6 @@ module.exports = {
 	checkJellyfinItemIDRegex,
 	ticksToSeconds,
 	hmsToSeconds,
-	getDiscordEmbedError
+	getDiscordEmbedError,
+	secondsToHms
 };

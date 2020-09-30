@@ -1,12 +1,15 @@
 const InterActivePlayMessage = require("./InterActivePlayMessage");
+const CONFIG = require("../config.json");
 
 var iapm;
 
-function init (message, title, artist, imageURL, itemURL, getProgress, onPrevious, onPausePlay, onStop, onNext, onRepeat) {
+var updateInterval;
+
+function init (message, title, artist, imageURL, itemURL, getProgress, onPrevious, onPausePlay, onStop, onNext, onRepeat, playlistLenth) {
 	if (typeof iapm !== "undefined") {
 		destroy();
 	}
-	iapm = new InterActivePlayMessage(message, title, artist, imageURL, itemURL, getProgress, onPrevious, onPausePlay, onStop, onNext, onRepeat);
+	iapm = new InterActivePlayMessage(message, title, artist, imageURL, itemURL, getProgress, onPrevious, onPausePlay, onStop, onNext, onRepeat, playlistLenth);
 }
 
 function destroy () {
@@ -15,6 +18,11 @@ function destroy () {
 		iapm = undefined;
 	} else {
 		throw Error("No Interactive Message Found");
+	}
+
+	if (updateInterval !== "undefined") {
+		clearInterval(updateInterval);
+		updateInterval = undefined;
 	}
 }
 
@@ -25,9 +33,24 @@ function hasMessage () {
 		return true;
 	}
 }
+/**
+ *
+ * @param {Function} callback function to retrieve current ticks
+ */
+function startUpate (callback) {
+	updateInterval = setInterval(() => {
+		iapm.updateProgress(callback());
+	}, CONFIG["interactive-seek-bar-update-intervall"]);
+}
+
+function updateCurrentSongMessage (title, artist, imageURL, itemURL, ticksLength, playlistIndex, playlistLenth) {
+	iapm.updateCurrentSongMessage(title, artist, imageURL, itemURL, ticksLength, playlistIndex, playlistLenth);
+}
 
 module.exports = {
 	init,
 	destroy,
-	hasMessage
+	hasMessage,
+	startUpate,
+	updateCurrentSongMessage
 };
