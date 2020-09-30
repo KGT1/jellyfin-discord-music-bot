@@ -17,6 +17,7 @@ pause/resume | Pause/Resume audio
 seek | Where to Seek to in seconds or MM:SS
 skip | Skip this Song
 help | Display the help message
+spawn | Spawns an Interactive Play Controller
 
 ### Limitations
 
