@@ -181,6 +181,13 @@ function handleChannelMessage (message) {
 			const errorMessage = getDiscordEmbedError(error);
 			message.channel.send(errorMessage);
 		}
+	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "spawn")) {
+		try {
+			playbackmanager.spawnPlayMessage(message)
+		} catch (error) {
+			const errorMessage = getDiscordEmbedError(error);
+			message.channel.send(errorMessage);
+		}
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "help")) {
 		/* eslint-disable quotes */
 		const reply = new Discord.MessageEmbed()
@@ -204,6 +211,9 @@ function handleChannelMessage (message) {
 			}, {
 				name: `${CONFIG["discord-prefix"]}skip`,
 				value: "Skip this Song"
+			}, {
+				name: `${CONFIG["discord-prefix"]}spawn`,
+				value: "Spawns an Interactive Play Controller"
 			}, {
 				name: `${CONFIG["discord-prefix"]}help`,
 				value: "Display this help message"
