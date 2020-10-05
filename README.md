@@ -8,14 +8,15 @@ Jellyfin Discord Music Bot is a Discord Bot for the [Jellyfin Media Server!](htt
 
 Just `summon` the Bot into your Channel, that choose the Bot in Jellfin as the Device you want to cast to
 
-[Image to Discord Play to Window](img/playtowindow.png)
+![Image to Discord Play to Window](img/playtowindow.png)
 
  and start playing you favourite Music
 
 ### Interactive Play Message
 
 When you start playing something you can easily controll the Bot with just clicking on the Buttons under the Play Message
-[Image to Interactive Play Message](img/discordplaymessage.png)
+
+![Image to Interactive Play Message](img/discordplaymessage.png)
 
 ### Commands
 
@@ -47,7 +48,7 @@ You'll need a Discord Application for this Bot to work, as you will host it your
 
 ### The simplest way to get started is using Docker:
 
-```
+```bash
 docker run -d \
     --name jellyfin-discord-music-bot \
     -e DISCORD_PREFIX="?" \
@@ -70,13 +71,13 @@ Dependencies:
 - npm 6.14.6
 - NodeJS v12.18.3
 - ffmpeg 4.2.4
-```
+```bash
 git clone https://github.com/kgt1/jellyfin-discord-music-bot.git
 cd jellyfin-discord-music-bot
 npm install
 ```
 edit config.json and add your token,server-address etc.
-```
+```bash
 npm run start
 ```
 
