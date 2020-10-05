@@ -16,8 +16,8 @@ play | Play the following item(can be the name of the song or the Stream URL)
 pause/resume | Pause/Resume audio
 seek | Where to Seek to in seconds or MM:SS
 skip | Skip this Song
-help | Display the help message
 spawn | Spawns an Interactive Play Controller
+help | Display the help message
 
 ### Limitations
 
@@ -32,7 +32,7 @@ You'll need a Discord Application for this Bot to work, as you will host it your
 [How to invite the Bot to your server](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links)
 
 
-The simplest way to get started is using Docker:
+### The simplest way to get started is using Docker:
 
 ```
 docker run -d \
@@ -48,7 +48,7 @@ docker run -d \
     kgt1/jellyfin-discord-music-bot
 ```
 
-Alternatively you can run the Application natively with NodeJS:
+### Alternatively you can run the Application natively with NodeJS:
 
 Dependencies:
 
