@@ -38,9 +38,11 @@ function hasMessage () {
  * @param {Function} callback function to retrieve current ticks
  */
 function startUpate (callback) {
-	updateInterval = setInterval(() => {
-		iapm.updateProgress(callback());
-	}, CONFIG["interactive-seek-bar-update-intervall"]);
+	if(typeof CONFIG["interactive-seek-bar-update-intervall"] === "number" && CONFIG["interactive-seek-bar-update-intervall"] > 0){
+		updateInterval = setInterval(() => {
+			iapm.updateProgress(callback());
+		}, CONFIG["interactive-seek-bar-update-intervall"]);
+	}
 }
 
 function updateCurrentSongMessage (title, artist, imageURL, itemURL, ticksLength, playlistIndex, playlistLenth) {

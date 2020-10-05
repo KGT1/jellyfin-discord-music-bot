@@ -34,7 +34,7 @@ function getMaxWidthString (string) {
 
 class InterActivePlayMessage {
 	// musicplayermessage
-	// probably should have done events instead of.
+	// probably should have done events instead of callbacks
 	/**
 	 *
 	 * @param {Object} message
@@ -125,14 +125,17 @@ class InterActivePlayMessage {
 	}
 
 	updateProgress (ticks) {
-		this.musicplayermessage.embeds[0].fields[0] = {
-			name: getProgressString(ticks / this.ticksLength),
-			value: `${secondsToHms(ticksToSeconds(ticks))} / ${secondsToHms(ticksToSeconds(this.ticksLength))}`,
-			inline: false
-		};
+		if(typeof this.musicplayermessage !== "undefined" && typeof this.musicplayermessage.embeds[0] !== "undefined" && typeof this.musicplayermessage.embeds[0].fields[0] !== "undefined"){
 
-		this.musicplayermessage.timestamp = new Date();
-		this.musicplayermessage.edit(this.musicplayermessage.embeds[0]);
+			this.musicplayermessage.embeds[0].fields[0] = {
+				name: getProgressString(ticks / this.ticksLength),
+				value: `${secondsToHms(ticksToSeconds(ticks))} / ${secondsToHms(ticksToSeconds(this.ticksLength))}`,
+				inline: false
+			};
+	
+			this.musicplayermessage.timestamp = new Date();
+			this.musicplayermessage.edit(this.musicplayermessage.embeds[0]);
+		}
 	}
 
 	updateCurrentSongMessage (title, artist, imageURL, itemURL, ticksLength, playlistIndex, playlistLenth) {

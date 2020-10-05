@@ -47,13 +47,26 @@ function getRandomDiscordColor () {
 async function searchForItemID (searchString) {
 	const response = await jellyfinClientManager.getJellyfinClient().getSearchHints({
 		searchTerm: searchString,
-		includeItemTypes: "Audio"
+		includeItemTypes: "Audio,MusicAlbum,Playlist"
 	});
 
 	if (response.TotalRecordCount < 1) {
-		throw Error("Found no Song");
+		throw Error("Found nothing");
 	} else {
-		return response.SearchHints[0].ItemId;
+		console.log(response);
+		switch(response.SearchHints[0].Type){
+			case "Audio":
+				return [response.SearchHints[0].ItemId];
+			case "Playlist":
+			case "MusicAlbum":
+				console.log("Hey its a Music Album")
+				let resp = await jellyfinClientManager.getJellyfinClient().getItems(jellyfinClientManager.getJellyfinClient().getCurrentUserId(),{sortBy:"SortName", sortOrder:"Ascending",parentId:response.SearchHints[0].ItemId});
+				let itemArray = [];
+				resp.Items.forEach(element => {
+					itemArray.push(element.Id)
+				});
+				return itemArray;
+		}
 	}
 }
 
@@ -88,7 +101,7 @@ async function playThis (message) {
 	// check if play command was used with itemID
 	const regexresults = checkJellyfinItemIDRegex(argument);
 	if (regexresults) {
-		itemID = regexresults[0];
+		itemID = regexresults;
 	} else {
 		try {
 			itemID = await searchForItemID(argument);
@@ -101,7 +114,7 @@ async function playThis (message) {
 	}
 
 	discordClient.user.client.voice.connections.forEach((element) => {
-		playbackmanager.startPlaying(element, [itemID], 0, 0, isSummendByPlay);
+		playbackmanager.startPlaying(element, itemID, 0, 0, isSummendByPlay);
 		playbackmanager.spawnPlayMessage(message);
 	});
 }
