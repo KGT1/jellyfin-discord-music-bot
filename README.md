@@ -35,7 +35,7 @@ spawn | Spawns an Interactive Play Controller
 help | Display the help message
 
 ### Limitations
-
+- No Playlist Repeat Mode.
 - Multi Server support.
 - [Playing Video Content](https://support.discord.com/hc/en-us/community/posts/360059238512-Add-Go-Live-support-for-API) (if Discord ever adds this, I'll implement it into this Bot)
 
