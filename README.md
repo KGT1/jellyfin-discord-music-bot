@@ -6,7 +6,7 @@ Jellyfin Discord Music Bot is a Discord Bot for the [Jellyfin Media Server!](htt
 
 ### Play to
 
-Just `summon` the Bot into your Channel, that choose the Bot in Jellfin as the Device you want to cast to
+Just `summon` the Bot into your Channel, than choose the Bot in Jellyfin as the Device you want to cast to
 
 ![Image to Discord Play to Window](img/playtowindow.png)
 
@@ -27,6 +27,7 @@ Command | Description
 summon | Join the channel the author of the message(now you can cast to the Bot from within Jellyfin)
 disconnect | Disconnect from all current Voice Channels
 play | Play the following item(can be the name of the song or the Stream URL)
+add | Add the following item to the current playlist
 pause/resume | Pause/Resume audio
 seek | Where to Seek to in seconds or MM:SS
 skip | Skip this Song
