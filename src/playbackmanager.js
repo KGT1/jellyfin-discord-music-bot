@@ -80,7 +80,7 @@ async function spawnPlayMessage (message) {
 			playPause,
 			() => { stop(_disconnectOnFinish ? discordclientmanager.getDiscordClient().user.client.voice.connections.first() : undefined); },
 			nextTrack,
-			setIsRepeat,
+			()=>{setIsRepeat(!isRepeat)},
 			currentPlayingPlaylist.length);
 		if (typeof CONFIG["interactive-seek-bar-update-intervall"] === "number") {
 			interactivemsghandler.startUpate(getPostitionTicks);
@@ -91,10 +91,13 @@ async function spawnPlayMessage (message) {
 }
 
 async function updatePlayMessage () {
-	const itemIdDetails = await jellyfinClientManager.getJellyfinClient().getItem(jellyfinClientManager.getJellyfinClient().getCurrentUserId(), getItemId());
-	const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId, { type: "Primary" });
-	interactivemsghandler.updateCurrentSongMessage(itemIdDetails.Name, itemIdDetails.Artists[0] || "VA", imageURL,
-		`${jellyfinClientManager.getJellyfinClient().serverAddress()}/web/index.html#!/details?id=${itemIdDetails.AlbumId}`, itemIdDetails.RunTimeTicks, currentPlayingPlaylistIndex + 1, currentPlayingPlaylist.length);
+	if(getItemId()!==undefined){
+		const itemIdDetails = await jellyfinClientManager.getJellyfinClient().getItem(jellyfinClientManager.getJellyfinClient().getCurrentUserId(), getItemId());
+		const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId, { type: "Primary" });
+		interactivemsghandler.updateCurrentSongMessage(itemIdDetails.Name, itemIdDetails.Artists[0] || "VA", imageURL,
+			`${jellyfinClientManager.getJellyfinClient().serverAddress()}/web/index.html#!/details?id=${itemIdDetails.AlbumId}`, itemIdDetails.RunTimeTicks, currentPlayingPlaylistIndex + 1, currentPlayingPlaylist.length);
+	
+	}
 }
 
 /**
@@ -108,9 +111,12 @@ function seek (toSeek = 0) {
 		throw Error("No Song Playing");
 	}
 }
-
-function addTrack (itemID) {
-	currentPlayingPlaylist.push(itemID);
+/**
+ * 
+ * @param {Array} itemID - array of itemIDs to be added 
+ */
+function addTracks (itemID) {
+	currentPlayingPlaylist=currentPlayingPlaylist.concat(itemID);
 }
 
 function nextTrack () {
@@ -235,6 +241,7 @@ function getItemId () {
 	if (typeof currentPlayingPlaylist !== "undefined") {
 		return currentPlayingPlaylist[currentPlayingPlaylistIndex];
 	}
+	return undefined;
 }
 
 function getIsPaused () {
@@ -253,6 +260,7 @@ function setIsRepeat (arg) {
 			isRepeat = !isRepeat;
 		}
 	}
+	console.log("img being called and setting",arg,isRepeat);
 	isRepeat = arg;
 }
 
@@ -285,7 +293,7 @@ module.exports = {
 	setIsRepeat,
 	nextTrack,
 	previousTrack,
-	addTrack,
+	addTracks,
 	getPostitionTicks,
 	spawnPlayMessage
 };

@@ -53,13 +53,11 @@ async function searchForItemID (searchString) {
 	if (response.TotalRecordCount < 1) {
 		throw Error("Found nothing");
 	} else {
-		console.log(response);
 		switch(response.SearchHints[0].Type){
 			case "Audio":
 				return [response.SearchHints[0].ItemId];
 			case "Playlist":
 			case "MusicAlbum":
-				console.log("Hey its a Music Album")
 				let resp = await jellyfinClientManager.getJellyfinClient().getItems(jellyfinClientManager.getJellyfinClient().getCurrentUserId(),{sortBy:"SortName", sortOrder:"Ascending",parentId:response.SearchHints[0].ItemId});
 				let itemArray = [];
 				resp.Items.forEach(element => {
@@ -97,14 +95,14 @@ function summonMessage (message) {
 async function playThis (message) {
 	const indexOfItemID = message.content.indexOf(CONFIG["discord-prefix"] + "play") + (CONFIG["discord-prefix"] + "play").length + 1;
 	const argument = message.content.slice(indexOfItemID);
-	let itemID;
+	let items;
 	// check if play command was used with itemID
 	const regexresults = checkJellyfinItemIDRegex(argument);
 	if (regexresults) {
-		itemID = regexresults;
+		items = regexresults;
 	} else {
 		try {
-			itemID = await searchForItemID(argument);
+			items = await searchForItemID(argument);
 		} catch (e) {
 			const noSong = getDiscordEmbedError(e);
 			message.channel.send(noSong);
@@ -113,10 +111,30 @@ async function playThis (message) {
 		}
 	}
 
-	discordClient.user.client.voice.connections.forEach((element) => {
-		playbackmanager.startPlaying(element, itemID, 0, 0, isSummendByPlay);
-		playbackmanager.spawnPlayMessage(message);
-	});
+	playbackmanager.startPlaying(discordClient.user.client.voice.connections.first(), items, 0, 0, isSummendByPlay);
+	playbackmanager.spawnPlayMessage(message);
+}
+
+async function addThis (message) {
+	const indexOfItemID = message.content.indexOf(CONFIG["discord-prefix"] + "add") + (CONFIG["discord-prefix"] + "add").length + 1;
+	const argument = message.content.slice(indexOfItemID);
+	let items;
+	// check if play command was used with itemID
+	const regexresults = checkJellyfinItemIDRegex(argument);
+	if (regexresults) {
+		items = regexresults;
+	} else {
+		try {
+			items = await searchForItemID(argument);
+			console.log(items);
+		} catch (e) {
+			const noSong = getDiscordEmbedError(e);
+			message.channel.send(noSong);
+			return;
+		}
+	}
+	
+	playbackmanager.addTracks(items);
 }
 
 function handleChannelMessage (message) {
@@ -188,12 +206,7 @@ function handleChannelMessage (message) {
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "add")) {
 		const indexOfArgument = message.content.indexOf(CONFIG["discord-prefix"] + "add") + (CONFIG["discord-prefix"] + "add").length + 1;
 		const argument = message.content.slice(indexOfArgument);
-		try {
-			playbackmanager.addTrack(argument);
-		} catch (error) {
-			const errorMessage = getDiscordEmbedError(error);
-			message.channel.send(errorMessage);
-		}
+		addThis(message);
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "spawn")) {
 		try {
 			playbackmanager.spawnPlayMessage(message)
@@ -215,6 +228,9 @@ function handleChannelMessage (message) {
 			}, {
 				name: `${CONFIG["discord-prefix"]}play`,
 				value: "Play the following item"
+			}, {
+				name: `${CONFIG["discord-prefix"]}add`,
+				value: "Add the following item to the current playlist"
 			}, {
 				name: `${CONFIG["discord-prefix"]}pause/resume`,
 				value: "Pause/Resume audio"
