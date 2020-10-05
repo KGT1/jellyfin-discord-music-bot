@@ -3,6 +3,7 @@
     "server-adress":"",
     "jellyfin-username":"",
     "jellyfin-password":"",
-    "discord-prefix":"",
-    "jellyfin-app-name":""
+    "discord-prefix":"?",
+    "jellyfin-app-name":"Jellyfin Discord Music Bot",
+    "interactive-seek-bar-update-intervall":2000
 }
