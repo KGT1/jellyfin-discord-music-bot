@@ -125,14 +125,13 @@ class InterActivePlayMessage {
 	}
 
 	updateProgress (ticks) {
-		if(typeof this.musicplayermessage !== "undefined" && typeof this.musicplayermessage.embeds[0] !== "undefined" && typeof this.musicplayermessage.embeds[0].fields[0] !== "undefined"){
-
+		if (typeof this.musicplayermessage !== "undefined" && typeof this.musicplayermessage.embeds[0] !== "undefined" && typeof this.musicplayermessage.embeds[0].fields[0] !== "undefined") {
 			this.musicplayermessage.embeds[0].fields[0] = {
 				name: getProgressString(ticks / this.ticksLength),
 				value: `${secondsToHms(ticksToSeconds(ticks))} / ${secondsToHms(ticksToSeconds(this.ticksLength))}`,
 				inline: false
 			};
-	
+
 			this.musicplayermessage.timestamp = new Date();
 			this.musicplayermessage.edit(this.musicplayermessage.embeds[0]);
 		}

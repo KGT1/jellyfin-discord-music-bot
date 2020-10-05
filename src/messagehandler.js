@@ -53,17 +53,18 @@ async function searchForItemID (searchString) {
 	if (response.TotalRecordCount < 1) {
 		throw Error("Found nothing");
 	} else {
-		switch(response.SearchHints[0].Type){
-			case "Audio":
-				return [response.SearchHints[0].ItemId];
-			case "Playlist":
-			case "MusicAlbum":
-				let resp = await jellyfinClientManager.getJellyfinClient().getItems(jellyfinClientManager.getJellyfinClient().getCurrentUserId(),{sortBy:"SortName", sortOrder:"Ascending",parentId:response.SearchHints[0].ItemId});
-				let itemArray = [];
-				resp.Items.forEach(element => {
-					itemArray.push(element.Id)
-				});
-				return itemArray;
+		switch (response.SearchHints[0].Type) {
+		case "Audio":
+			return [response.SearchHints[0].ItemId];
+		case "Playlist":
+		case "MusicAlbum": {
+			const resp = await jellyfinClientManager.getJellyfinClient().getItems(jellyfinClientManager.getJellyfinClient().getCurrentUserId(), { sortBy: "SortName", sortOrder: "Ascending", parentId: response.SearchHints[0].ItemId });
+			const itemArray = [];
+			resp.Items.forEach(element => {
+				itemArray.push(element.Id);
+			});
+			return itemArray;
+		}
 		}
 	}
 }
@@ -126,14 +127,13 @@ async function addThis (message) {
 	} else {
 		try {
 			items = await searchForItemID(argument);
-			console.log(items);
 		} catch (e) {
 			const noSong = getDiscordEmbedError(e);
 			message.channel.send(noSong);
 			return;
 		}
 	}
-	
+
 	playbackmanager.addTracks(items);
 }
 
@@ -204,12 +204,10 @@ function handleChannelMessage (message) {
 			message.channel.send(errorMessage);
 		}
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "add")) {
-		const indexOfArgument = message.content.indexOf(CONFIG["discord-prefix"] + "add") + (CONFIG["discord-prefix"] + "add").length + 1;
-		const argument = message.content.slice(indexOfArgument);
 		addThis(message);
 	} else if (message.content.startsWith(CONFIG["discord-prefix"] + "spawn")) {
 		try {
-			playbackmanager.spawnPlayMessage(message)
+			playbackmanager.spawnPlayMessage(message);
 		} catch (error) {
 			const errorMessage = getDiscordEmbedError(error);
 			message.channel.send(errorMessage);

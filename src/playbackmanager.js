@@ -53,18 +53,19 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 		}
 
 		getAudioDispatcher().on("finish", () => {
-			if(isRepeat){
-				startPlaying(voiceconnection,undefined,currentPlayingPlaylistIndex,0)
-			}else{
-			if (currentPlayingPlaylist.length < playlistIndex) {
-				if (disconnectOnFinish) {
-					stop(voiceconnection, currentPlayingPlaylist[playlistIndex - 1]);
-				} else {
-					stop(undefined, currentPlayingPlaylist[playlistIndex - 1]);
-				}
+			if (isRepeat) {
+				startPlaying(voiceconnection, undefined, currentPlayingPlaylistIndex, 0);
 			} else {
-				startPlaying(voiceconnection, undefined, currentPlayingPlaylistIndex + 1, 0);
-			}}
+				if (currentPlayingPlaylist.length < playlistIndex) {
+					if (disconnectOnFinish) {
+						stop(voiceconnection, currentPlayingPlaylist[playlistIndex - 1]);
+					} else {
+						stop(undefined, currentPlayingPlaylist[playlistIndex - 1]);
+					}
+				} else {
+					startPlaying(voiceconnection, undefined, currentPlayingPlaylistIndex + 1, 0);
+				}
+			}
 		});
 	}
 	playasync().catch((rsn) => {
@@ -83,7 +84,7 @@ async function spawnPlayMessage (message) {
 			playPause,
 			() => { stop(_disconnectOnFinish ? discordclientmanager.getDiscordClient().user.client.voice.connections.first() : undefined); },
 			nextTrack,
-			()=>{setIsRepeat(!isRepeat)},
+			() => { setIsRepeat(!isRepeat); },
 			currentPlayingPlaylist.length);
 		if (typeof CONFIG["interactive-seek-bar-update-intervall"] === "number") {
 			interactivemsghandler.startUpate(getPostitionTicks);
@@ -94,12 +95,11 @@ async function spawnPlayMessage (message) {
 }
 
 async function updatePlayMessage () {
-	if(getItemId()!==undefined){
+	if (getItemId() !== undefined) {
 		const itemIdDetails = await jellyfinClientManager.getJellyfinClient().getItem(jellyfinClientManager.getJellyfinClient().getCurrentUserId(), getItemId());
 		const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId, { type: "Primary" });
 		interactivemsghandler.updateCurrentSongMessage(itemIdDetails.Name, itemIdDetails.Artists[0] || "VA", imageURL,
 			`${jellyfinClientManager.getJellyfinClient().serverAddress()}/web/index.html#!/details?id=${itemIdDetails.AlbumId}`, itemIdDetails.RunTimeTicks, currentPlayingPlaylistIndex + 1, currentPlayingPlaylist.length);
-	
 	}
 }
 
@@ -115,11 +115,11 @@ function seek (toSeek = 0) {
 	}
 }
 /**
- * 
- * @param {Array} itemID - array of itemIDs to be added 
+ *
+ * @param {Array} itemID - array of itemIDs to be added
  */
 function addTracks (itemID) {
-	currentPlayingPlaylist=currentPlayingPlaylist.concat(itemID);
+	currentPlayingPlaylist = currentPlayingPlaylist.concat(itemID);
 }
 
 function nextTrack () {
@@ -263,7 +263,6 @@ function setIsRepeat (arg) {
 			isRepeat = !isRepeat;
 		}
 	}
-	console.log("img being called and setting",arg,isRepeat);
 	isRepeat = arg;
 }
 

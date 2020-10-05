@@ -38,7 +38,7 @@ function hasMessage () {
  * @param {Function} callback function to retrieve current ticks
  */
 function startUpate (callback) {
-	if(typeof CONFIG["interactive-seek-bar-update-intervall"] === "number" && CONFIG["interactive-seek-bar-update-intervall"] > 0){
+	if (typeof CONFIG["interactive-seek-bar-update-intervall"] === "number" && CONFIG["interactive-seek-bar-update-intervall"] > 0) {
 		updateInterval = setInterval(() => {
 			iapm.updateProgress(callback());
 		}, CONFIG["interactive-seek-bar-update-intervall"]);
