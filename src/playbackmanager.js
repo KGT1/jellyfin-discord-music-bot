@@ -53,6 +53,9 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 		}
 
 		getAudioDispatcher().on("finish", () => {
+			if(isRepeat){
+				startPlaying(voiceconnection,itemIDPlaylist,currentPlayingPlaylistIndex,0)
+			}else{
 			if (currentPlayingPlaylist.length < playlistIndex) {
 				if (disconnectOnFinish) {
 					stop(voiceconnection, currentPlayingPlaylist[playlistIndex - 1]);
@@ -61,7 +64,7 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 				}
 			} else {
 				startPlaying(voiceconnection, itemIDPlaylist, currentPlayingPlaylistIndex + 1, 0);
-			}
+			}}
 		});
 	}
 	playasync().catch((rsn) => {
