@@ -4,6 +4,19 @@ Jellyfin Discord Music Bot is a Discord Bot for the [Jellyfin Media Server!](htt
 
 ## Capabilities
 
+### Play to
+
+Just `summon` the Bot into your Channel, that choose the Bot in Jellfin as the Device you want to cast to
+
+[Image to Discord Play to Window](img/playtowindow.png)
+
+ and start playing you favourite Music
+
+### Interactive Play Message
+
+When you start playing something you can easily controll the Bot with just clicking on the Buttons under the Play Message
+[Image to Interactive Play Message](img/discordplaymessage.png)
+
 ### Commands
 
 Beware that you'll always need to add your prefix(default: ?) in front of the command.
@@ -47,6 +60,8 @@ docker run -d \
     --restart unless-stopped \
     kgt1/jellyfin-discord-music-bot
 ```
+
+MESSAGE_UPDATE_INTERVAL is the amount of time in ms the play message gets updated with the current time
 
 ### Alternatively you can run the Application natively with NodeJS:
 
