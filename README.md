@@ -42,10 +42,6 @@ help | Display the help message
 ## Getting Started
 You'll need a Discord Application for this Bot to work, as you will host it yourself.
 
-[How to retrieve your token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
-
-[How to invite the Bot to your server](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links)
-
 [Generate an Api and bot here](https://discord.com/developers/applications/). 
 
 Click New Application. 
@@ -71,6 +67,12 @@ Go to the OAuth2 page, click Bot Scope to get the url authorization link.
 Authorize your room!
 
 ![image](https://user-images.githubusercontent.com/20715731/97124818-08380b80-1708-11eb-944a-f96395dcf6c1.png)
+
+For official documentation
+
+[How to retrieve your token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
+
+[How to invite the Bot to your server](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links)
 
 ### The simplest way to get started is using Docker:
 
