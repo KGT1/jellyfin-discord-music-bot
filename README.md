@@ -68,7 +68,13 @@ Authorize your room!
 
 ![image](https://user-images.githubusercontent.com/20715731/97124818-08380b80-1708-11eb-944a-f96395dcf6c1.png)
 
-For official documentation
+Next, join a voice channel and connect your bot with ?summon. This will connect your bot to the voice channel you're in and will create the device profile in Jellyfin.
+
+![Image to Discord Play to Window](img/playtowindow.png)
+
+From within Jellyfin, start playing content or from within Discord, use the bot commands to start enjoying music!
+
+For official documentation to creating a bot.
 
 [How to retrieve your token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
 
