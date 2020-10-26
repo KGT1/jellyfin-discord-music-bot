@@ -114,6 +114,14 @@ function seek (toSeek = 0) {
 		throw Error("No Song Playing");
 	}
 }
+
+function currentTrackStopped (itemId) {
+	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped({
+		userId: jellyfinClientManager.getJellyfinClient().getCurrentUserId(),
+		itemId: itemId,
+		playSessionId: getPlaySessionId()
+	});
+}
 /**
  *
  * @param {Array} itemID - array of itemIDs to be added
@@ -123,12 +131,12 @@ function addTracks (itemID) {
 }
 
 function nextTrack () {
-	// console.log(currentPlayingPlaylistIndex + 1, currentPlayingPlaylist.length);
 	if (!(currentPlayingPlaylist)) {
 		throw Error("There is currently nothing playing");
 	} else if (currentPlayingPlaylistIndex + 1 >= currentPlayingPlaylist.length) {
 		throw Error("This is the Last song");
 	}
+	currentTrackStopped(getItemId());
 	startPlaying(undefined, undefined, currentPlayingPlaylistIndex + 1, 0, _disconnectOnFinish);
 }
 
@@ -140,6 +148,7 @@ function previousTrack () {
 			startPlaying(undefined, undefined, currentPlayingPlaylistIndex, 0, _disconnectOnFinish);
 			throw Error("This is the First song");
 		}
+		currentTrackStopped(getItemId());
 		startPlaying(undefined, undefined, currentPlayingPlaylistIndex - 1, 0, _disconnectOnFinish);
 	}
 }
@@ -155,11 +164,7 @@ function stop (disconnectVoiceConnection, itemId = getItemId()) {
 	if (disconnectVoiceConnection) {
 		disconnectVoiceConnection.disconnect();
 	}
-	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped({
-		userId: jellyfinClientManager.getJellyfinClient().getCurrentUserId(),
-		itemId: itemId,
-		playSessionId: getPlaySessionId()
-	});
+	currentTrackStopped(itemId);
 	if (getAudioDispatcher()) {
 		try {
 			getAudioDispatcher().destroy();
