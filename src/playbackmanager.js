@@ -123,7 +123,6 @@ function addTracks (itemID) {
 }
 
 function nextTrack () {
-	// console.log(currentPlayingPlaylistIndex + 1, currentPlayingPlaylist.length);
 	if (!(currentPlayingPlaylist)) {
 		throw Error("There is currently nothing playing");
 	} else if (currentPlayingPlaylistIndex + 1 >= currentPlayingPlaylist.length) {

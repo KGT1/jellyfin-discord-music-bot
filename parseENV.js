@@ -2,13 +2,13 @@ const fs = require("fs");
 const filename = "./config.json";
 const configfile = require(filename);
 
-if (!configfile["discord-prefix"]) { configfile["discord-prefix"] = process.env.DISCORD_PREFIX; }
-if (!configfile.token) { configfile.token = process.env.DISCORD_TOKEN; }
-if (!configfile["server-adress"]) { configfile["server-adress"] = process.env.JELLYFIN_SERVER_ADDRESS; }
-if (!configfile["jellyfin-username"]) { configfile["jellyfin-username"] = process.env.JELLYFIN_USERNAME; }
-if (!configfile["jellyfin-password"]) { configfile["jellyfin-password"] = process.env.JELLYFIN_PASSWORD; }
-if (!configfile["jellyfin-app-name"]) { configfile["jellyfin-app-name"] = process.env.JELLYFIN_APP_NAME; }
-if (!configfile["interactive-seek-bar-update-intervall"]) { configfile["interactive-seek-bar-update-intervall"] = parseInt(process.env.MESSAGE_UPDATE_INTERVAL); }
+if (process.env.DISCORD_PREFIX) { configfile["discord-prefix"] = process.env.DISCORD_PREFIX; }
+if (process.env.DISCORD_TOKEN) { configfile.token = process.env.DISCORD_TOKEN; }
+if (process.env.JELLYFIN_SERVER_ADDRESS) { configfile["server-adress"] = process.env.JELLYFIN_SERVER_ADDRESS; }
+if (process.env.JELLYFIN_USERNAME) { configfile["jellyfin-username"] = process.env.JELLYFIN_USERNAME; }
+if (process.env.JELLYFIN_PASSWORD) { configfile["jellyfin-password"] = process.env.JELLYFIN_PASSWORD; }
+if (process.env.JELLYFIN_APP_NAME) { configfile["jellyfin-app-name"] = process.env.JELLYFIN_APP_NAME; }
+if (process.env.MESSAGE_UPDATE_INTERVAL) { configfile["interactive-seek-bar-update-intervall"] = parseInt(process.env.MESSAGE_UPDATE_INTERVAL); }
 
 fs.writeFile(filename, JSON.stringify(configfile, null, 1), (err) => {
 	if (err) return console.error(err);

@@ -42,10 +42,43 @@ help | Display the help message
 ## Getting Started
 You'll need a Discord Application for this Bot to work, as you will host it yourself.
 
+[Generate an Api and bot here](https://discord.com/developers/applications/). 
+
+Click New Application. 
+
+![image](https://user-images.githubusercontent.com/20715731/97124506-bba00080-1706-11eb-820a-035039484ca2.png)
+
+The Name of the application will be the bot's name.
+
+![image](https://user-images.githubusercontent.com/20715731/97124528-d2deee00-1706-11eb-8a05-8b0542e1213a.png)
+
+Go to the Bot tab.
+
+![image](https://user-images.githubusercontent.com/20715731/97124557-ef7b2600-1706-11eb-8fed-2373df9a1eb7.png)
+
+Generate the bot, and grab the token. Also, recommend making the bot private.
+
+![image](https://user-images.githubusercontent.com/20715731/97124639-484abe80-1707-11eb-92f9-1182aad3d2d2.png)
+
+Go to the OAuth2 page, click Bot Scope to get the url authorization link.
+
+![image](https://user-images.githubusercontent.com/20715731/97124754-b68f8100-1707-11eb-9e16-f84401d108bf.png)
+
+Authorize your room!
+
+![image](https://user-images.githubusercontent.com/20715731/97124818-08380b80-1708-11eb-944a-f96395dcf6c1.png)
+
+Next, join a voice channel and connect your bot with ?summon. This will connect your bot to the voice channel you're in and will create the device profile in Jellyfin.
+
+![Image to Discord Play to Window](img/playtowindow.png)
+
+From within Jellyfin, start playing content or from within Discord, use the bot commands to start enjoying music!
+
+For official documentation to creating a bot.
+
 [How to retrieve your token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
 
 [How to invite the Bot to your server](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links)
-
 
 ### The simplest way to get started is using Docker:
 
