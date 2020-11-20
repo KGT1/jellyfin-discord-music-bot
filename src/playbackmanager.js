@@ -129,6 +129,8 @@ function nextTrack () {
 	} else if (currentPlayingPlaylistIndex + 1 >= currentPlayingPlaylist.length) {
 		throw Error("This is the Last song");
 	}
+	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
+
 	startPlaying(undefined, undefined, currentPlayingPlaylistIndex + 1, 0, _disconnectOnFinish);
 }
 
@@ -140,6 +142,8 @@ function previousTrack () {
 			startPlaying(undefined, undefined, currentPlayingPlaylistIndex, 0, _disconnectOnFinish);
 			throw Error("This is the First song");
 		}
+		jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
+
 		startPlaying(undefined, undefined, currentPlayingPlaylistIndex - 1, 0, _disconnectOnFinish);
 	}
 }
@@ -155,11 +159,7 @@ function stop (disconnectVoiceConnection, itemId = getItemId()) {
 	if (disconnectVoiceConnection) {
 		disconnectVoiceConnection.disconnect();
 	}
-	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped({
-		userId: jellyfinClientManager.getJellyfinClient().getCurrentUserId(),
-		itemId: itemId,
-		playSessionId: getPlaySessionId()
-	});
+	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 	if (getAudioDispatcher()) {
 		try {
 			getAudioDispatcher().destroy();
@@ -281,6 +281,17 @@ function getProgressPayload () {
 		RepeatMode: getRepeatMode(),
 		VolumeLevel: getVolumeLevel(),
 		EventName: "pauseplayupdate"
+	};
+	return payload;
+}
+
+function getStopPayload () {
+	const payload = {
+		userId: jellyfinClientManager.getJellyfinClient().getCurrentUserId(),
+		itemId: getItemId(),
+		sessionID: getPlaySessionId(),
+		playSessionId: getPlaySessionId(),
+		positionTicks: getPostitionTicks()
 	};
 	return payload;
 }
