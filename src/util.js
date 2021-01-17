@@ -1,6 +1,6 @@
 function checkJellyfinItemIDRegex (strgintomatch) {
 	const regexresult = strgintomatch.match(/([0-9]|[a-f]){32}/);
-	return regexresult;
+	return [regexresult[0]];
 }
 
 function ticksToSeconds (ticks) {
