@@ -75,7 +75,7 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 
 async function spawnPlayMessage (message) {
 	const itemIdDetails = await jellyfinClientManager.getJellyfinClient().getItem(jellyfinClientManager.getJellyfinClient().getCurrentUserId(), getItemId());
-	const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId, { type: "Primary" });
+	const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId || getItemId(), { type: "Primary" });
 	try {
 		interactivemsghandler.init(message, itemIdDetails.Name, itemIdDetails.Artists[0] || "VA", imageURL,
 			`${jellyfinClientManager.getJellyfinClient().serverAddress()}/web/index.html#!/details?id=${itemIdDetails.AlbumId}`,
@@ -97,7 +97,7 @@ async function spawnPlayMessage (message) {
 async function updatePlayMessage () {
 	if (getItemId() !== undefined) {
 		const itemIdDetails = await jellyfinClientManager.getJellyfinClient().getItem(jellyfinClientManager.getJellyfinClient().getCurrentUserId(), getItemId());
-		const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId, { type: "Primary" });
+		const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId || getItemId(), { type: "Primary" });
 		interactivemsghandler.updateCurrentSongMessage(itemIdDetails.Name, itemIdDetails.Artists[0] || "VA", imageURL,
 			`${jellyfinClientManager.getJellyfinClient().serverAddress()}/web/index.html#!/details?id=${itemIdDetails.AlbumId}`, itemIdDetails.RunTimeTicks, currentPlayingPlaylistIndex + 1, currentPlayingPlaylist.length);
 	}
