@@ -31,7 +31,7 @@ function streamURLbuilder (itemID, bitrate) {
 }
 
 function startPlaying (voiceconnection = discordclientmanager.getDiscordClient().user.client.voice.connections.first(), itemIDPlaylist = currentPlayingPlaylist, playlistIndex = currentPlayingPlaylistIndex, seekTo, disconnectOnFinish = _disconnectOnFinish) {
-	log.debug("start playing ",playlistIndex, ". of list: ",itemIDPlaylist," in a voiceconnection?: ", typeof voiceconnection !== "undefined");
+	log.debug("start playing ", playlistIndex, ". of list: ", itemIDPlaylist, " in a voiceconnection?: ", typeof voiceconnection !== "undefined");
 	isPaused = false;
 	currentPlayingPlaylist = itemIDPlaylist;
 	currentPlayingPlaylistIndex = playlistIndex;
@@ -57,8 +57,7 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 
 		getAudioDispatcher().on("finish", () => {
 			if (isRepeat) {
-				
-				log.debug("repeat and sending following payload as reportPlaybackStopped to the server: ",getStopPayload());
+				log.debug("repeat and sending following payload as reportPlaybackStopped to the server: ", getStopPayload());
 				jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 				startPlaying(voiceconnection, undefined, currentPlayingPlaylistIndex, 0);
 			} else {
@@ -69,7 +68,7 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 						stop(undefined, currentPlayingPlaylist[playlistIndex - 1]);
 					}
 				} else {
-					log.debug("repeat and sending following payload as reportPlaybackStopped to the server: ",getStopPayload());
+					log.debug("repeat and sending following payload as reportPlaybackStopped to the server: ", getStopPayload());
 					jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 					startPlaying(voiceconnection, undefined, currentPlayingPlaylistIndex + 1, 0);
 				}
@@ -82,7 +81,7 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 }
 
 async function spawnPlayMessage (message) {
-	log.debug("spawned Play Message?: ",typeof message !== "undefined");
+	log.debug("spawned Play Message?: ", typeof message !== "undefined");
 	const itemIdDetails = await jellyfinClientManager.getJellyfinClient().getItem(jellyfinClientManager.getJellyfinClient().getCurrentUserId(), getItemId());
 	const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId || getItemId(), { type: "Primary" });
 	try {
@@ -129,7 +128,7 @@ function seek (toSeek = 0) {
  * @param {Array} itemID - array of itemIDs to be added
  */
 function addTracks (itemID) {
-	log.debug("added track: ",itemID);
+	log.debug("added track: ", itemID);
 	currentPlayingPlaylist = currentPlayingPlaylist.concat(itemID);
 }
 
@@ -141,7 +140,7 @@ function nextTrack () {
 		throw Error("This is the Last song");
 	}
 
-	log.debug("sending following payload as reportPlaybackStopped to the server: ",getStopPayload());
+	log.debug("sending following payload as reportPlaybackStopped to the server: ", getStopPayload());
 	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 
 	startPlaying(undefined, undefined, currentPlayingPlaylistIndex + 1, 0, _disconnectOnFinish);
@@ -157,7 +156,7 @@ function previousTrack () {
 			throw Error("This is the First song");
 		}
 
-		log.debug("sending following payload as reportPlaybackStopped to the server: ",getStopPayload());
+		log.debug("sending following payload as reportPlaybackStopped to the server: ", getStopPayload());
 		jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 
 		startPlaying(undefined, undefined, currentPlayingPlaylistIndex - 1, 0, _disconnectOnFinish);
@@ -168,7 +167,6 @@ function previousTrack () {
  * @param {Object=} disconnectVoiceConnection - Optional The voice Connection do disconnect from
  */
 function stop (disconnectVoiceConnection, itemId = getItemId()) {
-	
 	isPaused = true;
 	if (interactivemsghandler.hasMessage()) {
 		interactivemsghandler.destroy();
@@ -176,7 +174,7 @@ function stop (disconnectVoiceConnection, itemId = getItemId()) {
 	if (disconnectVoiceConnection) {
 		disconnectVoiceConnection.disconnect();
 	}
-	log.debug("stop playback and send following payload as reportPlaybackStopped to the server: ",getStopPayload());
+	log.debug("stop playback and send following payload as reportPlaybackStopped to the server: ", getStopPayload());
 	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 	if (getAudioDispatcher()) {
 		try {
