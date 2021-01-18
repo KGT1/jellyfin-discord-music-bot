@@ -26,9 +26,11 @@
   "homepage": "https://github.com/KGT1/jellyfin-discord-music-bot#readme",
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
+    "chalk": "^4.1.0",
     "discord.js": "^12.3.1",
     "jellyfin-apiclient": "1.4.1",
     "loglevel": "^1.7.1",
+    "loglevel-plugin-prefix": "^0.8.4",
     "node-fetch": "^2.6.0",
     "nodejs": "0.0.0",
     "window": "^4.2.7",
