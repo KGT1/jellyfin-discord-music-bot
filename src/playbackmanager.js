@@ -57,6 +57,9 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 
 		getAudioDispatcher().on("finish", () => {
 			if (isRepeat) {
+				
+				log.debug("repeat and sending following payload as reportPlaybackStopped to the server: ",getStopPayload());
+				jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 				startPlaying(voiceconnection, undefined, currentPlayingPlaylistIndex, 0);
 			} else {
 				if (currentPlayingPlaylist.length < playlistIndex) {
@@ -66,6 +69,8 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 						stop(undefined, currentPlayingPlaylist[playlistIndex - 1]);
 					}
 				} else {
+					log.debug("repeat and sending following payload as reportPlaybackStopped to the server: ",getStopPayload());
+					jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 					startPlaying(voiceconnection, undefined, currentPlayingPlaylistIndex + 1, 0);
 				}
 			}
@@ -135,6 +140,8 @@ function nextTrack () {
 	} else if (currentPlayingPlaylistIndex + 1 >= currentPlayingPlaylist.length) {
 		throw Error("This is the Last song");
 	}
+
+	log.debug("sending following payload as reportPlaybackStopped to the server: ",getStopPayload());
 	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 
 	startPlaying(undefined, undefined, currentPlayingPlaylistIndex + 1, 0, _disconnectOnFinish);
@@ -149,6 +156,8 @@ function previousTrack () {
 			startPlaying(undefined, undefined, currentPlayingPlaylistIndex, 0, _disconnectOnFinish);
 			throw Error("This is the First song");
 		}
+
+		log.debug("sending following payload as reportPlaybackStopped to the server: ",getStopPayload());
 		jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 
 		startPlaying(undefined, undefined, currentPlayingPlaylistIndex - 1, 0, _disconnectOnFinish);
@@ -167,7 +176,7 @@ function stop (disconnectVoiceConnection, itemId = getItemId()) {
 	if (disconnectVoiceConnection) {
 		disconnectVoiceConnection.disconnect();
 	}
-	log.debug("stop playback and send following payload to the server: ",getStopPayload());
+	log.debug("stop playback and send following payload as reportPlaybackStopped to the server: ",getStopPayload());
 	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 	if (getAudioDispatcher()) {
 		try {
