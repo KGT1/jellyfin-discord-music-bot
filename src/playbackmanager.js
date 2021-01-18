@@ -31,7 +31,7 @@ function streamURLbuilder (itemID, bitrate) {
 }
 
 function startPlaying (voiceconnection = discordclientmanager.getDiscordClient().user.client.voice.connections.first(), itemIDPlaylist = currentPlayingPlaylist, playlistIndex = currentPlayingPlaylistIndex, seekTo, disconnectOnFinish = _disconnectOnFinish) {
-	log.debug("start playing ",playlistIndex, ". of list: ",itemIDPlaylist," in a voiceconnection?: ", voiceconnection=!undefined);
+	log.debug("start playing ",playlistIndex, ". of list: ",itemIDPlaylist," in a voiceconnection?: ", isNaN(voiceconnection));
 	isPaused = false;
 	currentPlayingPlaylist = itemIDPlaylist;
 	currentPlayingPlaylistIndex = playlistIndex;
@@ -159,7 +159,7 @@ function previousTrack () {
  * @param {Object=} disconnectVoiceConnection - Optional The voice Connection do disconnect from
  */
 function stop (disconnectVoiceConnection, itemId = getItemId()) {
-	log.debug("stop playback and send following payload to the server: ",getStopPayload());
+	
 	isPaused = true;
 	if (interactivemsghandler.hasMessage()) {
 		interactivemsghandler.destroy();
@@ -167,6 +167,7 @@ function stop (disconnectVoiceConnection, itemId = getItemId()) {
 	if (disconnectVoiceConnection) {
 		disconnectVoiceConnection.disconnect();
 	}
+	log.debug("stop playback and send following payload to the server: ",getStopPayload());
 	jellyfinClientManager.getJellyfinClient().reportPlaybackStopped(getStopPayload());
 	if (getAudioDispatcher()) {
 		try {
