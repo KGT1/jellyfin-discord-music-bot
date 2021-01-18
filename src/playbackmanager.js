@@ -2,6 +2,8 @@
 const interactivemsghandler = require("./interactivemsghandler");
 const CONFIG = require("../config.json");
 const discordclientmanager = require("./discordclientmanager");
+const log = require("loglevel");
+
 const {
 	getAudioDispatcher,
 	setAudioDispatcher
@@ -29,6 +31,7 @@ function streamURLbuilder (itemID, bitrate) {
 }
 
 function startPlaying (voiceconnection = discordclientmanager.getDiscordClient().user.client.voice.connections.first(), itemIDPlaylist = currentPlayingPlaylist, playlistIndex = currentPlayingPlaylistIndex, seekTo, disconnectOnFinish = _disconnectOnFinish) {
+	log.debug("start playing ",playlistIndex, ". of list: ",itemIDPlaylist," in a voiceconnection?: ", voiceconnection=!undefined);
 	isPaused = false;
 	currentPlayingPlaylist = itemIDPlaylist;
 	currentPlayingPlaylistIndex = playlistIndex;
@@ -74,6 +77,7 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 }
 
 async function spawnPlayMessage (message) {
+	log.debug("spawned Play Message: ",message);
 	const itemIdDetails = await jellyfinClientManager.getJellyfinClient().getItem(jellyfinClientManager.getJellyfinClient().getCurrentUserId(), getItemId());
 	const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId || getItemId(), { type: "Primary" });
 	try {
@@ -107,6 +111,7 @@ async function updatePlayMessage () {
  * @param {Number} toSeek - where to seek in ticks
  */
 function seek (toSeek = 0) {
+	log.debug("seek to: ", toSeek);
 	if (getAudioDispatcher()) {
 		startPlaying(undefined, undefined, undefined, ticksToSeconds(toSeek), _disconnectOnFinish);
 		jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
@@ -119,10 +124,12 @@ function seek (toSeek = 0) {
  * @param {Array} itemID - array of itemIDs to be added
  */
 function addTracks (itemID) {
+	log.debug("added track: ",itemID);
 	currentPlayingPlaylist = currentPlayingPlaylist.concat(itemID);
 }
 
 function nextTrack () {
+	log.debug("nextTrack");
 	if (!(currentPlayingPlaylist)) {
 		throw Error("There is currently nothing playing");
 	} else if (currentPlayingPlaylistIndex + 1 >= currentPlayingPlaylist.length) {
@@ -134,6 +141,7 @@ function nextTrack () {
 }
 
 function previousTrack () {
+	log.debug("previousTrack");
 	if (ticksToSeconds(getPostitionTicks()) < 10) {
 		if (!(currentPlayingPlaylist)) {
 			throw Error("There is currently nothing playing");
@@ -151,6 +159,7 @@ function previousTrack () {
  * @param {Object=} disconnectVoiceConnection - Optional The voice Connection do disconnect from
  */
 function stop (disconnectVoiceConnection, itemId = getItemId()) {
+	log.debug("stop playback and send following payload to the server: ",getStopPayload());
 	isPaused = true;
 	if (interactivemsghandler.hasMessage()) {
 		interactivemsghandler.destroy();
@@ -170,12 +179,14 @@ function stop (disconnectVoiceConnection, itemId = getItemId()) {
 }
 
 function pause () {
+	log.debug("pause");
 	isPaused = true;
 	jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
 	getAudioDispatcher().pause(true);
 }
 
 function resume () {
+	log.debug("resume");
 	isPaused = false;
 	jellyfinClientManager.getJellyfinClient().reportPlaybackProgress(getProgressPayload());
 	getAudioDispatcher().resume();

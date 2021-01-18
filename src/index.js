@@ -9,6 +9,9 @@ try {
 	const {
 		handleChannelMessage
 	} = require("./messagehandler");
+	const log = require("loglevel");
+
+	log.setLevel(CONFIG["log-level"]);
 
 	jellyfinClientManager.init();
 	// TODO Error Checking as the apiclients is inefficent

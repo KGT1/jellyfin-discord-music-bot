@@ -5,5 +5,6 @@
     "jellyfin-password":"",
     "discord-prefix":"?",
     "jellyfin-app-name":"Jellyfin Discord Music Bot",
-    "interactive-seek-bar-update-intervall":2000
+    "interactive-seek-bar-update-intervall":2000,
+    "log-level":"info"
 }

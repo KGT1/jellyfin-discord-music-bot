@@ -9,6 +9,7 @@ if (process.env.JELLYFIN_USERNAME) { configfile["jellyfin-username"] = process.e
 if (process.env.JELLYFIN_PASSWORD) { configfile["jellyfin-password"] = process.env.JELLYFIN_PASSWORD; }
 if (process.env.JELLYFIN_APP_NAME) { configfile["jellyfin-app-name"] = process.env.JELLYFIN_APP_NAME; }
 if (process.env.MESSAGE_UPDATE_INTERVAL) { configfile["interactive-seek-bar-update-intervall"] = parseInt(process.env.MESSAGE_UPDATE_INTERVAL); }
+if (process.env.LOG_LEVEL) { configfile["log-level"] = process.env.LOG_LEVEL; }
 
 fs.writeFile(filename, JSON.stringify(configfile, null, 1), (err) => {
 	if (err) return console.error(err);
