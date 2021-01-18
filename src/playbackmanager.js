@@ -31,7 +31,7 @@ function streamURLbuilder (itemID, bitrate) {
 }
 
 function startPlaying (voiceconnection = discordclientmanager.getDiscordClient().user.client.voice.connections.first(), itemIDPlaylist = currentPlayingPlaylist, playlistIndex = currentPlayingPlaylistIndex, seekTo, disconnectOnFinish = _disconnectOnFinish) {
-	log.debug("start playing ",playlistIndex, ". of list: ",itemIDPlaylist," in a voiceconnection?: ", isNaN(voiceconnection));
+	log.debug("start playing ",playlistIndex, ". of list: ",itemIDPlaylist," in a voiceconnection?: ", typeof voiceconnection !== "undefined");
 	isPaused = false;
 	currentPlayingPlaylist = itemIDPlaylist;
 	currentPlayingPlaylistIndex = playlistIndex;
@@ -77,7 +77,7 @@ function startPlaying (voiceconnection = discordclientmanager.getDiscordClient()
 }
 
 async function spawnPlayMessage (message) {
-	log.debug("spawned Play Message: ",message);
+	log.debug("spawned Play Message?: ",typeof message !== "undefined");
 	const itemIdDetails = await jellyfinClientManager.getJellyfinClient().getItem(jellyfinClientManager.getJellyfinClient().getCurrentUserId(), getItemId());
 	const imageURL = await jellyfinClientManager.getJellyfinClient().getImageUrl(itemIdDetails.AlbumId || getItemId(), { type: "Primary" });
 	try {
