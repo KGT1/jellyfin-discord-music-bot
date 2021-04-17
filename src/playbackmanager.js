@@ -218,7 +218,7 @@ function getPostitionTicks () {
 
 function getPlayMethod () {
 	// TODO figure out how to figure this out
-	return "Transcode";
+	return "DirectPlay";
 }
 
 function getRepeatMode () {
