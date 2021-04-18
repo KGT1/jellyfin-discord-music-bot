@@ -7,7 +7,7 @@ function openSocket () {
 	jellyfinClientManager.getJellyfinClient().reportCapabilities(
 		{
 			PlayableMediaTypes: "Audio",
-			SupportsMediaControl: "True",
+			SupportsMediaControl: true,
 			SupportedCommands: "SetRepeatMode,Play,Playstate"
 		}
 	);
