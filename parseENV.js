@@ -4,7 +4,7 @@ const configfile = require(filename);
 
 if (process.env.DISCORD_PREFIX) { configfile["discord-prefix"] = process.env.DISCORD_PREFIX; }
 if (process.env.DISCORD_TOKEN) { configfile.token = process.env.DISCORD_TOKEN; }
-if (process.env.JELLYFIN_SERVER_ADDRESS) { configfile["server-adress"] = process.env.JELLYFIN_SERVER_ADDRESS; }
+if (process.env.JELLYFIN_SERVER_ADDRESS) { configfile["server-address"] = process.env.JELLYFIN_SERVER_ADDRESS; }
 if (process.env.JELLYFIN_USERNAME) { configfile["jellyfin-username"] = process.env.JELLYFIN_USERNAME; }
 if (process.env.JELLYFIN_PASSWORD) { configfile["jellyfin-password"] = process.env.JELLYFIN_PASSWORD; }
 if (process.env.JELLYFIN_APP_NAME) { configfile["jellyfin-app-name"] = process.env.JELLYFIN_APP_NAME; }
