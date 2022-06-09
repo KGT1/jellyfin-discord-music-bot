@@ -37,7 +37,7 @@ help | Display the help message
 ### Limitations
 - No Playlist Repeat Mode.
 - Multi Server support.
-- [Playing Video Content](https://support.discord.com/hc/en-us/community/posts/360059238512-Add-Go-Live-support-for-API) (if Discord ever adds this, I'll implement it into this Bot)
+- [Playing Video Content](https://github.com/discordjs/discord.js/issues/4116) (if Discord ever adds this, I'll implement it into this Bot)
 
 ## Getting Started
 You'll need a Discord Application for this Bot to work, as you will host it yourself.
