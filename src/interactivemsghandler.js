@@ -49,7 +49,8 @@ function updateCurrentSongMessage (title, artist, imageURL, itemURL, ticksLength
 	if (typeof iapm !== "undefined") {
 		iapm.updateCurrentSongMessage(title, artist, imageURL, itemURL, ticksLength, playlistIndex, playlistLenth);
 	} else {
-		throw Error("No Interactive Message Found");
+		// throw Error("No Interactive Message Found");
+		console.error("ERROR: No Interactive Message Found"); // Log this error to stdout instead of terminating the program.
 	}
 }
 
