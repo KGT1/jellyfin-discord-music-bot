@@ -138,6 +138,8 @@ class InterActivePlayMessage {
 	}
 
 	updateCurrentSongMessage (title, artist, imageURL, itemURL, ticksLength, playlistIndex, playlistLenth) {
+		if (typeof this.musicplayermessage === "undefined") return; // Type safety
+
 		this.musicplayermessage.embeds[0].url = itemURL;
 		this.musicplayermessage.embeds[0].description = `${getMaxWidthString(title)}\nby\n${getMaxWidthString(artist)}`;
 		this.musicplayermessage.embeds[0].thumbnail = { url: imageURL };
