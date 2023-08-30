@@ -1,3 +1,12 @@
+> ⚠️ **WARNING: UNMAINTAINED PROJECT**
+>
+> This project is **unmaintained** and only works with Jellyfin versions **≤ 10.7.x**.
+> 
+> For a maintained rewrite compatible with Jellyfin versions >10.8.x by the wonderful [manuel-rw](https://github.com/manuel-rw/), visit: [jellyfin-discord-music-bot](https://github.com/manuel-rw/jellyfin-discord-music-bot/).
+> 
+> If you decide to run this with an older Jellyfin version, please be aware of potential security implications, both for Jellyfin and this bot, as well as its dependencies.
+
+
 # Jellyfin Discord Music Bot
 
 Jellyfin Discord Music Bot is a Discord Bot for the [Jellyfin Media Server!](http://github.com/jellyfin/jellyfin)
